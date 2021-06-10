@@ -11,8 +11,8 @@ interface WarehouseContextType {
   search: { searchValue: string; emptyStateLabel: string }
   valid: boolean
   checkValues: (event: any) => void
-  goHomePage: (event: SyntheticEvent) => void
   actions: (indexOf: number) => void
+  listSupplyLotsValues: any
 }
 const WarehouseContext = React.createContext<WarehouseContextType>({
   updateSearch: () => {},
@@ -24,8 +24,8 @@ const WarehouseContext = React.createContext<WarehouseContextType>({
   search: { searchValue: '', emptyStateLabel: '' },
   valid: false,
   checkValues: () => {},
-  goHomePage: () => {},
   actions: () => {},
+  listSupplyLotsValues: {},
 })
 
 export default WarehouseContext

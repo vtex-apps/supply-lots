@@ -1,0 +1,58 @@
+type Query {
+  """
+  Check if a SKU and a Warehouse exist by their IDs and get their names
+  """
+  getSkuAndWarehouseNames(
+    """
+    SKU ID to be checked
+    """
+    skuId: String!
+    """
+    Warehouse ID to be checked
+    """
+    warehouseId: String!
+  ): Names
+
+  """
+  List all Supply Lots of a SKU scheduled to arrive at a Warehouse
+  """
+  listSupplyLots(
+    """
+    SKU scheduled to arrive in the Supply Lot
+    """
+    skuId: String!
+    """
+    Warehouse where the Supply Lot is scheduled to arrive
+    """
+    warehouseId: String!
+  ): [SupplyLot]
+}
+
+type Mutation {
+  """
+  Save a Supply Lot of a SKU scheduled to arrive at a Warehouse
+  """
+  saveSupplyLot(
+    """
+    Information necessary to save a Supply Lot
+    """
+    supplyLotData: SupplyLotInput!
+  ): Boolean
+  """
+  Transfer a Supply Lot of a SKU/Warehouse to the active Inventory
+  """
+  transferSupplyLot(
+    """
+    SKU scheduled to arrive in the Supply Lot
+    """
+    skuId: String!
+    """
+    Warehouse where the Supply Lot is scheduled to arrive
+    """
+    warehouseId: String!
+    """
+    ID of the Supply Lot which will be transfered to the active Inventory
+    """
+    supplyLotId: String!
+  ): Boolean
+}

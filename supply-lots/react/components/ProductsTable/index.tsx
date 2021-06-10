@@ -62,14 +62,15 @@ const ProductsTable: FC = () => {
             },
             {
               label: 'Estoque ID',
-              value: provider.warehouse.name,
+              value: provider.warehouse.id,
             },
             {
               label: 'Nome estoque',
-              value: provider.warehouse.id,
+              value: provider.warehouse.name,
             },
           ]}
           schema={schemaTable}
+          items={provider.listSupplyLotsValues}
         ></Table>
       </PageBlock>
     </>

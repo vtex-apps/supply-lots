@@ -2,30 +2,45 @@ export const schemaTable = {
   properties: {
     index: {
       title: 'Indice',
-      width: 100,
     },
     name: {
       title: 'Nome',
-      width: 150,
     },
     date: {
       title: 'Data de chegada',
-      width: 150,
     },
     total: {
       title: 'Total dos lotes',
-      width: 150,
     },
     keepSelling: {
       title: 'Permanecer vendendo',
-      width: 170,
     },
-    Color: {
+    color: {
       title: 'Cor',
-      width: 150,
     },
     actions: {
       title: 'Ações',
     },
   },
 }
+
+export const valuesTable = [
+  {
+    index: '1',
+    name: 'Ana',
+    date: '08/06/1997',
+    total: '1000',
+    keepSelling: 'true',
+    color: 'teste',
+    actions: 'teste2',
+  },
+  {
+    index: '2',
+    name: 'Luiza',
+    date: '22/04/2000',
+    total: '1500',
+    keepSelling: 'false',
+    color: 'teste4',
+    actions: 'teste3',
+  },
+]

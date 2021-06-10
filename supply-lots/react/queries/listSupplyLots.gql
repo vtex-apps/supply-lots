@@ -1,0 +1,10 @@
+query listSupplyLots($skuId: String!, $warehouseId: String!) {
+  listSupplyLots(skuId: $skuId, warehouseId: $warehouseId) {
+    supplyLotId
+    skuId
+    warehouseId
+    totalQuantity
+    dateOfSupplyUtc
+    keepSellingAfterExpiration
+  }
+}
