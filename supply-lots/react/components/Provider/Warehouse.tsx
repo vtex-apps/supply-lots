@@ -1,6 +1,4 @@
 /* eslint-disable func-names */
-/* eslint-disable vtex/prefer-early-return */
-/* eslint-disable no-console */
 import type { FC, SyntheticEvent } from 'react'
 import React, { useMemo, useEffect, useState } from 'react'
 import { useLazyQuery } from 'react-apollo'
@@ -22,6 +20,11 @@ const initialSku = {
 const initialWarehouse = {
   id: '',
   name: '',
+}
+
+const status = {
+  color: 'blue',
+  label: 'teste',
 }
 
 // eslint-disable-next-line vtex/prefer-early-return
@@ -66,7 +69,7 @@ const WarehouseProvider: FC = (props) => {
   }, [data])
 
   useMemo(() => {
-    console.log('MUDOU')
+    // eslint-disable-next-line vtex/prefer-early-return
     if (isValid) {
       setValid(true)
       updateSku({ name: data.getSkuAndWarehouseNames.skuName })
@@ -83,8 +86,6 @@ const WarehouseProvider: FC = (props) => {
   }, [isValid])
 
   const listSupplyLotsValues = useMemo(() => {
-    console.log('retorno', dataListSupplyLots)
-
     const tableValues = [{}]
 
     // eslint-disable-next-line array-callback-return
@@ -98,13 +99,12 @@ const WarehouseProvider: FC = (props) => {
       indexOf: number
     ) {
       const value = {
-        index: indexOf,
+        index: indexOf + 1,
         name: values.supplyLotId,
         date: reformatDate(values.dateOfSupplyUtc),
         total: values.totalQuantity,
         keepSelling: values.keepSellingAfterExpiration ? 'Sim' : 'Não',
-        color: 'teste',
-        actions: 'teste2',
+        color: { color: 'red', label: 'teste2' },
       }
 
       tableValues.push(value)
