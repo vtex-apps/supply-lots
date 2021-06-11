@@ -10,9 +10,10 @@ interface WarehouseContextType {
   sku: Sku
   search: { searchValue: string; emptyStateLabel: string }
   valid: boolean
-  checkValues: (event: any) => void
+  checkValues: (event: SyntheticEvent) => void
   actions: (indexOf: number) => void
   listSupplyLotsValues: any
+  schemaTable: any
 }
 const WarehouseContext = React.createContext<WarehouseContextType>({
   updateSearch: () => {},
@@ -26,6 +27,7 @@ const WarehouseContext = React.createContext<WarehouseContextType>({
   checkValues: () => {},
   actions: () => {},
   listSupplyLotsValues: {},
+  schemaTable: {},
 })
 
 export default WarehouseContext

@@ -1,7 +1,15 @@
+/* eslint-disable vtex/prefer-early-return */
 /* eslint-disable func-names */
 import type { FC, SyntheticEvent } from 'react'
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useLazyQuery } from 'react-apollo'
+import {
+  IconDelete,
+  IconExternalLinkMini,
+  IconEdit,
+  Tag,
+  ButtonWithIcon,
+} from 'vtex.styleguide'
 
 import WarehouseContext from '../Context/WarehouseContext'
 import getSkuAndWarehouseNames from '../../queries/getSkuAndWarehouseNames.gql'
@@ -22,12 +30,6 @@ const initialWarehouse = {
   name: '',
 }
 
-const status = {
-  color: 'blue',
-  label: 'teste',
-}
-
-// eslint-disable-next-line vtex/prefer-early-return
 const WarehouseProvider: FC = (props) => {
   const [search, setSearch] = useState(initialState)
   const [warehouse, setWarehouse] = useState<Warehouse>(initialWarehouse)
@@ -69,7 +71,6 @@ const WarehouseProvider: FC = (props) => {
   }, [data])
 
   useMemo(() => {
-    // eslint-disable-next-line vtex/prefer-early-return
     if (isValid) {
       setValid(true)
       updateSku({ name: data.getSkuAndWarehouseNames.skuName })
@@ -104,7 +105,15 @@ const WarehouseProvider: FC = (props) => {
         date: reformatDate(values.dateOfSupplyUtc),
         total: values.totalQuantity,
         keepSelling: values.keepSellingAfterExpiration ? 'Sim' : 'Não',
-        color: { color: 'red', label: 'teste2' },
+        color: colorLabel(
+          values.keepSellingAfterExpiration,
+          values.dateOfSupplyUtc
+        ),
+        actions: {
+          skuId: sku.id,
+          warehouseId: warehouse.id,
+          supplyLotId: values.supplyLotId,
+        },
       }
 
       tableValues.push(value)
@@ -113,6 +122,38 @@ const WarehouseProvider: FC = (props) => {
     return tableValues
   }, [dataListSupplyLots])
 
+  function colorLabel(
+    keepSellingAfterExpiration: boolean,
+    dateOfSupplyUtc: string
+  ) {
+    let color = 'rgb(0, 187, 212)'
+    let label = 'Regular'
+    const date = new Date()
+    const dateUTC = date.toUTCString()
+
+    const secondsdateOfSupplyUtc = Date.parse(dateOfSupplyUtc)
+    const secondsNow = Date.parse(dateUTC)
+
+    if (secondsdateOfSupplyUtc < secondsNow && !keepSellingAfterExpiration) {
+      label = 'Expirou'
+      color = 'rgb(20, 32, 50)'
+    } else if (
+      secondsdateOfSupplyUtc < secondsNow &&
+      keepSellingAfterExpiration
+    ) {
+      label = 'Expirou e vendendo'
+      color = 'red'
+    } else if (
+      secondsdateOfSupplyUtc > secondsNow &&
+      secondsdateOfSupplyUtc - secondsNow < 259200000
+    ) {
+      label = 'Expirando'
+      color = 'rgb(214, 216, 224)'
+    }
+
+    return { color, label }
+  }
+
   async function checkValues(event: SyntheticEvent) {
     event.preventDefault()
     if (sku.id && warehouse.id) {
@@ -120,13 +161,110 @@ const WarehouseProvider: FC = (props) => {
     }
   }
 
-  function openModalNewSupplyLot() {
-    alert('Abrir Modal')
+  function newSupplyLot() {
+    // Adicionar new supply lots
   }
 
   function actions(indexOf: number) {
-    if (indexOf === 0) openModalNewSupplyLot()
+    if (indexOf === 0) newSupplyLot()
     else if (indexOf === 1) setValid(false)
+  }
+
+  function clickEdit(skuId: string, warehouseId: string, supplyLotId: string) {
+    // editar
+  }
+
+  function clickDelete(
+    skuId: string,
+    warehouseId: string,
+    supplyLotId: string
+  ) {
+    // Deletar
+  }
+
+  function clickTransfer(
+    skuId: string,
+    warehouseId: string,
+    supplyLotId: string
+  ) {
+    // Transferir
+  }
+
+  const schemaTable = {
+    properties: {
+      index: {
+        title: 'Indice',
+      },
+      name: {
+        title: 'Nome',
+      },
+      date: {
+        title: 'Data de chegada',
+      },
+      total: {
+        title: 'Total dos lotes',
+      },
+      keepSelling: {
+        title: 'Permanecer vendendo',
+      },
+      color: {
+        title: 'Status',
+        cellRenderer: ({ cellData }: any) => {
+          return (
+            <Tag color="#ffff" bgColor={cellData?.color}>
+              <span className="nowrap"> {cellData?.label} </span>
+            </Tag>
+          )
+        },
+      },
+      actions: {
+        title: 'Ações',
+        cellRenderer: ({ cellData }: any) => {
+          const value = `${cellData?.skuId}, ${cellData?.warehouseId},  ${cellData?.supplyLotId}`
+
+          return (
+            <>
+              <ButtonWithIcon
+                icon={<IconEdit />}
+                variation="tertiary"
+                onClick={(e: SyntheticEvent) => {
+                  e.preventDefault()
+                  clickEdit(
+                    cellData.skuId,
+                    cellData.warehouseId,
+                    cellData.supplyLotId
+                  )
+                }}
+              ></ButtonWithIcon>
+              <ButtonWithIcon
+                icon={<IconDelete />}
+                variation="tertiary"
+                onClick={(e: SyntheticEvent) => {
+                  e.preventDefault()
+                  clickDelete(
+                    cellData.skuId,
+                    cellData.warehouseId,
+                    cellData.supplyLotId
+                  )
+                }}
+              ></ButtonWithIcon>
+              <ButtonWithIcon
+                icon={<IconExternalLinkMini />}
+                variation="tertiary"
+                onClick={(e: SyntheticEvent) => {
+                  e.preventDefault()
+                  clickTransfer(
+                    cellData.skuId,
+                    cellData.warehouseId,
+                    cellData.supplyLotId
+                  )
+                }}
+              ></ButtonWithIcon>
+            </>
+          )
+        },
+      },
+    },
   }
 
   return (
@@ -143,6 +281,7 @@ const WarehouseProvider: FC = (props) => {
         checkValues,
         actions,
         listSupplyLotsValues,
+        schemaTable,
       }}
     >
       {props.children}

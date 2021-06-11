@@ -2,7 +2,6 @@ import type { FC } from 'react'
 import React, { useContext } from 'react'
 import { PageBlock, Table } from 'vtex.styleguide'
 
-import { schemaTable } from '../../utils/schema'
 import WarehouseContext from '../Context/WarehouseContext'
 import HomePage from '../HomePage/index'
 
@@ -69,7 +68,7 @@ const ProductsTable: FC = () => {
               value: provider.warehouse.name,
             },
           ]}
-          schema={schemaTable}
+          schema={provider.schemaTable}
           items={provider.listSupplyLotsValues}
         ></Table>
       </PageBlock>
