@@ -15,39 +15,25 @@ export class SupplyLot extends JanusClient {
     })
   }
 
-  public list = (skuId: string, warehouseId: string) =>
+  public list = (skuId: string, warehouseId: string, supplyLotId?: string) => 
     this.http.get<SupplyLotInterface[]>(
-      `${this.baseURL}/${encodeURI(skuId)}/warehouses/${encodeURI(
-        warehouseId
-      )}/supplyLots`
+      `${this.baseURL}/${encodeURI(skuId)}/warehouses/${encodeURI(warehouseId)}/supplyLots${
+        supplyLotId ? `/${encodeURI(supplyLotId)}` : `` 
+      }`
     )
+    
+  public set = (supplyLotData: SupplyLotInterface) => 
+    this.http.put<void>(
+      `${this.baseURL}/${encodeURI(supplyLotData.skuId)}/warehouses/${encodeURI(supplyLotData.warehouseId)}/supplyLots/${encodeURI(supplyLotData.supplyLotId)}`,
+      {
+        quantity: supplyLotData.totalQuantity,
+        dateOfSupplyUtc: supplyLotData.dateOfSupplyUtc,
+        keepSellingAfterExpiration: supplyLotData.keepSellingAfterExpiration
+      }
+    ).then(() => true)
 
-  public save = (supplyLotData: SupplyLotInterface) =>
-    this.http
-      .put(
-        `${this.baseURL}/${encodeURI(
-          supplyLotData.skuId
-        )}/warehouses/${encodeURI(
-          supplyLotData.warehouseId
-        )}/supplyLots/${encodeURI(supplyLotData.supplyLotId)}`,
-        {
-          quantity: supplyLotData.totalQuantity,
-          dateOfSupplyUtc: supplyLotData.dateOfSupplyUtc,
-          keepSellingAfterExpiration: supplyLotData.keepSellingAfterExpiration,
-        }
-      )
-      .then(() => true)
-      .catch(() => {
-        return false
-      })
-
-  public transfer = (skuId: string, warehouseId: string, supplyLotId: string) =>
-    this.http
-      .post(
-        `${this.baseURL}/${encodeURI(skuId)}/warehouses/${encodeURI(
-          warehouseId
-        )}/supplyLots/${encodeURI(supplyLotId)}/transfer`
-      )
-      .then(() => true)
-      .catch(() => false)
+  public transfer = (skuId: string, warehouseId: string, supplyLotId: string) => 
+    this.http.post<void>(
+      `${this.baseURL}/${encodeURI(skuId)}/warehouses/${encodeURI(warehouseId)}/supplyLots/${encodeURI(supplyLotId)}/transfer`
+    ).then(() => true)
 }

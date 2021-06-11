@@ -3,23 +3,22 @@ import { JanusClient } from '@vtex/api'
 
 export class Catalog extends JanusClient {
   protected baseURL = '/api/catalog/pvt'
-  constructor(context: IOContext, options?: InstanceOptions) {
-    super(context, {
+  constructor(ctx: IOContext, options?: InstanceOptions) {
+    super(ctx, {
       ...options,
       headers: {
         ...options?.headers,
-        ...(context.adminUserAuthToken
-          ? { VtexIdclientAutCookie: context.adminUserAuthToken }
+        ...(ctx.adminUserAuthToken
+          ? { VtexIdclientAutCookie: ctx.adminUserAuthToken }
           : null),
       },
     })
   }
 
-  public skuName = (skuId: string) =>
-    this.http
-      .get<{ Name: string }>(
-        `${this.baseURL}/stockkeepingunit/${encodeURI(skuId)}`
-      )
-      .then((sku) => sku.Name)
-      .catch(() => null)
+  public skuName = (skuId: string) => 
+    this.http.get<{ Name: string }>(
+      `${this.baseURL}/stockkeepingunit/${encodeURI(skuId)}`
+    ).then(sku => sku.Name)
+     .catch(() => undefined)
 }
+

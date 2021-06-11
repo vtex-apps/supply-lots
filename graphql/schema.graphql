@@ -11,7 +11,7 @@ type Query {
     Warehouse ID to be checked
     """
     warehouseId: String!
-  ): Names
+  ): SkuAndWarehouseNames
 
   """
   List all Supply Lots of a SKU scheduled to arrive at a Warehouse
@@ -25,18 +25,26 @@ type Query {
     Warehouse where the Supply Lot is scheduled to arrive
     """
     warehouseId: String!
+    """
+    ID of the Supply Lot, in the case the Query is used to verify if a ID was already used
+    """
+    supplyLotId: String
   ): [SupplyLot]
 }
 
 type Mutation {
   """
-  Save a Supply Lot of a SKU scheduled to arrive at a Warehouse
+  Save or update a Supply Lot of a SKU scheduled to arrive at a Warehouse
   """
-  saveSupplyLot(
+  setSupplyLot(
     """
-    Information necessary to save a Supply Lot
+    Information necessary to save or update a Supply Lot
     """
     supplyLotData: SupplyLotInput!
+    """
+    Whether the Mutation will update a existing Supply Lot if the provided ID is already being used 
+    """
+    updateExisting: Boolean
   ): Boolean
   """
   Transfer a Supply Lot of a SKU/Warehouse to the active Inventory

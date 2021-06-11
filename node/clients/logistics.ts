@@ -3,26 +3,24 @@ import { JanusClient } from '@vtex/api'
 
 export class Logistics extends JanusClient {
   protected baseURL = '/api/logistics/pvt'
-  constructor(context: IOContext, options?: InstanceOptions) {
-    super(context, {
+  constructor(ctx: IOContext, options?: InstanceOptions) {
+    super(ctx, {
       ...options,
       headers: {
         ...options?.headers,
-        ...(context.adminUserAuthToken
-          ? { VtexIdclientAutCookie: context.adminUserAuthToken }
+        ...(ctx.adminUserAuthToken
+          ? { VtexIdclientAutCookie: ctx.adminUserAuthToken }
           : null),
       },
     })
   }
 
   public warehouseName = (warehouseId: string) =>
-    this.http
-      .get<Array<{ id: string; name: string }>>(
-        `${this.baseURL}/configuration/warehouses`
-      )
-      .then(
-        (data) =>
-          data.find((element: { id: string }) => element.id === warehouseId)
-            ?.name
-      )
+     this.http.get<{ id: string, name: string }[]>(
+      `${this.baseURL}/configuration/warehouses`
+    ).then(data => 
+      data.find((element: { id: string }) => 
+        element.id === warehouseId
+      )?.name
+    ).catch(() => undefined)
 }

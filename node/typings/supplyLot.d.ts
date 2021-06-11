@@ -5,4 +5,10 @@ interface SupplyLotInterface {
   totalQuantity: number
   dateOfSupplyUtc: string
   keepSellingAfterExpiration: boolean
+  transfer: {
+    isTransfered: boolean
+    destinationItemAvailabilityId: string
+    dateOfTransferUTC: string
+    user: string
+  }
 }

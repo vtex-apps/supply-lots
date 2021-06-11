@@ -1,28 +1,34 @@
+type SkuAndWarehouseNames {
+  skuName: String
+
+  warehouseName: String
+}
+
 type SupplyLot {
   """
   ID of the Supply Lot in which the SKU's scheduling should be considered
   """
-  supplyLotId: ID!
+  supplyLotId: ID
   """
   SKU scheduled to arrive in the Supply Lot
   """
-  skuId: String!
+  skuId: String
   """
   Warehouse where the Supply Lot is scheduled to arrive
   """
-  warehouseId: String!
+  warehouseId: String
   """
   SKU quantity in the Supply Lot
   """
-  totalQuantity: Int!
+  totalQuantity: Int
   """
   Date to be considered in the SKU's scheduling
   """
-  dateOfSupplyUtc: String!
+  dateOfSupplyUtc: String
   """
   Whether to keep selling from the Supply the date expired
   """
-  keepSellingAfterExpiration: Boolean!
+  keepSellingAfterExpiration: Boolean
 }
 
 input SupplyLotInput {
@@ -50,9 +56,4 @@ input SupplyLotInput {
   Whether to keep selling from the Supply the date expired
   """
   keepSellingAfterExpiration: Boolean!
-}
-
-type Names {
-  skuName: String
-  warehouseName: String
 }

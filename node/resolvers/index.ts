@@ -1,5 +1,5 @@
 import { getSkuAndWarehouseNames } from './getSkuAndWarehouseNames'
-import { listSupplyLots, saveSupplyLot, transferSupplyLot } from './supplyLots'
+import { listSupplyLots, setSupplyLot, transferSupplyLot } from './supplyLots'
 
 export const resolvers = {
   Query: {
@@ -7,7 +7,7 @@ export const resolvers = {
     listSupplyLots,
   },
   Mutation: {
-    saveSupplyLot,
-    transferSupplyLot,
+    setSupplyLot,
+    transferSupplyLot
   },
 }
