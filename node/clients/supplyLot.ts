@@ -36,4 +36,9 @@ export class SupplyLot extends JanusClient {
     this.http.post<void>(
       `${this.baseURL}/${encodeURI(skuId)}/warehouses/${encodeURI(warehouseId)}/supplyLots/${encodeURI(supplyLotId)}/transfer`
     ).then(() => true)
+    
+  public delete = (skuId: string, warehouseId: string, supplyLotId: string) => 
+    this.http.delete<void>(
+      `${this.baseURL}/${encodeURI(skuId)}/warehouses/${encodeURI(warehouseId)}/supplyLots/${encodeURI(supplyLotId)}`
+    ).then(() => true)
 }

@@ -1,34 +1,20 @@
 type Query {
   """
-  Check if a SKU and a Warehouse exist by their IDs and get their names
-  """
-  getSkuAndWarehouseNames(
-    """
-    SKU ID to be checked
-    """
-    skuId: String!
-    """
-    Warehouse ID to be checked
-    """
-    warehouseId: String!
-  ): SkuAndWarehouseNames
-
-  """
   List all Supply Lots of a SKU scheduled to arrive at a Warehouse
   """
   listSupplyLots(
     """
     SKU scheduled to arrive in the Supply Lot
     """
-    skuId: String!
+    skuId: ID!
     """
     Warehouse where the Supply Lot is scheduled to arrive
     """
-    warehouseId: String!
+    warehouseId: ID!
     """
     ID of the Supply Lot, in the case the Query is used to verify if a ID was already used
     """
-    supplyLotId: String
+    supplyLotId: ID
   ): [SupplyLot]
 }
 
@@ -53,14 +39,31 @@ type Mutation {
     """
     SKU scheduled to arrive in the Supply Lot
     """
-    skuId: String!
+    skuId: ID!
     """
     Warehouse where the Supply Lot is scheduled to arrive
     """
-    warehouseId: String!
+    warehouseId: ID!
     """
     ID of the Supply Lot which will be transfered to the active Inventory
     """
-    supplyLotId: String!
+    supplyLotId: ID!
+  ): Boolean
+  """
+  Deletes a Supply Lot of a SKU/Warehouse (the Supply Lot entity still exists, but with a Quantity set to 0).
+  """
+  deleteSupplyLot(
+    """
+    SKU scheduled to arrive in the Supply Lot
+    """
+    skuId: ID!
+    """
+    Warehouse where the Supply Lot is scheduled to arrive
+    """
+    warehouseId: ID!
+    """
+    ID of the Supply Lot which will be deleted
+    """
+    supplyLotId: ID!
   ): Boolean
 }

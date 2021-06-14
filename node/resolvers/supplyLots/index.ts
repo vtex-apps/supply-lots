@@ -20,3 +20,9 @@ export const transferSupplyLot = (
   { skuId, warehouseId, supplyLotId }: { skuId: string, warehouseId: string, supplyLotId: string },
   { clients: { supplyLot } }: Context
 ) => supplyLot.transfer(skuId, warehouseId, supplyLotId)
+
+export const deleteSupplyLot = (
+  _: any,
+  { skuId, warehouseId, supplyLotId }: { skuId: string, warehouseId: string, supplyLotId: string },
+  { clients: { supplyLot } }: Context
+) => supplyLot.delete(skuId, warehouseId, supplyLotId)

@@ -1,7 +1,8 @@
-type SkuAndWarehouseNames {
-  skuName: String
-
-  warehouseName: String
+type transfer {
+  isTransfered: Boolean
+  destinationItemAvailabilityId: String
+  dateOfTransferUTC: String
+  user: String
 }
 
 type SupplyLot {
@@ -12,15 +13,23 @@ type SupplyLot {
   """
   SKU scheduled to arrive in the Supply Lot
   """
-  skuId: String
+  skuId: ID
   """
   Warehouse where the Supply Lot is scheduled to arrive
   """
-  warehouseId: String
+  warehouseId: ID
   """
-  SKU quantity in the Supply Lot
+  Total quantity in the Supply Lot
   """
   totalQuantity: Int
+  """
+  Quantity still available to be sold in the Supply Lot
+  """
+  availableQuantity: Int
+  """
+  Quantity already reserved in the Supply Lot
+  """
+  reservedQuantity: Int
   """
   Date to be considered in the SKU's scheduling
   """
@@ -29,9 +38,19 @@ type SupplyLot {
   Whether to keep selling from the Supply the date expired
   """
   keepSellingAfterExpiration: Boolean
-}
+  """
+  Details about a Supply Lot transfer, if it was already transfered
+  """
+  transfer: Boolean
+  dockId: ID
+  isUnlimited: Boolean
+  salesChannel: [String]
+  deliveryChannels: [String]
+  timeToRefill: String
 
-input SupplyLotInput {
+}
+ 
+ input SupplyLotInput {
   """
   ID of the Supply Lot in which the SKU's scheduling should be considered
   """
@@ -39,11 +58,11 @@ input SupplyLotInput {
   """
   SKU which will be scheduled to arrive in the Supply Lot
   """
-  skuId: String!
+  skuId: ID!
   """
   Warehouse where the Supply Lot will be scheduled to arrive
   """
-  warehouseId: String!
+  warehouseId: ID!
   """
   SKU quantity in the Supply Lot
   """
