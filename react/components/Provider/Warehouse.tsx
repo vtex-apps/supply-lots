@@ -2,7 +2,7 @@
 /* eslint-disable func-names */
 import { FC, SyntheticEvent, useEffect } from 'react'
 import React, { useMemo, useState } from 'react'
-import { useLazyQuery, useQuery } from 'react-apollo'
+import { useQuery } from 'react-apollo'
 import {
   IconDelete,
   IconExternalLinkMini,
@@ -118,6 +118,8 @@ const WarehouseProvider: FC = (props) => {
         dateOfSupplyUtc: string
         totalQuantity: number
         keepSellingAfterExpiration: boolean
+        reservedQuantity: number
+        availableQuantity: number
       },
       indexOf: number
     ) {
@@ -125,6 +127,8 @@ const WarehouseProvider: FC = (props) => {
         index: indexOf+1,
         date: reformatDate(values.dateOfSupplyUtc),     
         total: values.totalQuantity,
+        reserved:values.reservedQuantity,
+        available:values.availableQuantity,
         keepSelling: values.keepSellingAfterExpiration ? 'Sim' : 'Não',
         color: colorLabel(
           values.keepSellingAfterExpiration,
@@ -187,6 +191,12 @@ const WarehouseProvider: FC = (props) => {
       },
       total: {
         title: 'Total dos lotes',
+      },
+      reserved:{
+        title: "Reservado"
+      },
+      available:{
+        title: "Disponível"
       },
       keepSelling: {
         title: 'Permanecer vendendo',
