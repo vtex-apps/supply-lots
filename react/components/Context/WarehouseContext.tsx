@@ -2,32 +2,44 @@ import type { SyntheticEvent } from 'react'
 import React from 'react'
 
 interface WarehouseContextType {
-  updateSearch: (search: string) => void
-  updateClear: () => void
-  updateSku: (sku: Sku) => void
-  updateWarehouse: (warehouse: Warehouse) => void
   warehouse: Warehouse
   sku: Sku
-  search: { searchValue: string; emptyStateLabel: string }
-  valid: boolean
-  checkValues: (event: SyntheticEvent) => void
-  actions: (indexOf: number) => void
+  checkValues: () => void
+  newSupplyLot: () => void
   listSupplyLotsValues: any
   schemaTable: any
+  modal: number
+  setModal: (modal: number) => void
+  setDate: (date: Date) => void
+  date: Date | undefined
+  setKeep: (keep: boolean) => void
+  keep: boolean | undefined
+  setItems: (keep: number) => void
+  items: number | undefined
+  modalDelete: boolean | undefined
+  setDelete: (modalDelete: boolean) => void
+  modalTransfer: boolean | undefined
+  setTransfer: (modalDelete: boolean) => void
 }
 const WarehouseContext = React.createContext<WarehouseContextType>({
-  updateSearch: () => {},
-  updateClear: () => {},
-  updateSku: () => {},
-  updateWarehouse: () => {},
   warehouse: {},
   sku: {},
-  search: { searchValue: '', emptyStateLabel: '' },
-  valid: false,
   checkValues: () => {},
-  actions: () => {},
+  newSupplyLot: () => {},
   listSupplyLotsValues: {},
   schemaTable: {},
+  modal: 0,
+  setModal: () => {},
+  setDate: () => {},
+  date: new Date(),
+  setKeep: () => {},
+  keep: false,
+  setItems: () => {},
+  items: 0,
+  modalDelete: false,
+  setDelete: () => {},
+  modalTransfer: false,
+  setTransfer: () => {},
 })
 
 export default WarehouseContext

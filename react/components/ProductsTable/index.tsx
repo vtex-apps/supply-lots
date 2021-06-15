@@ -1,53 +1,37 @@
-import type { FC } from 'react'
+import type { FC, SyntheticEvent } from 'react'
 import React, { useContext } from 'react'
-import { PageBlock, Table } from 'vtex.styleguide'
+import { PageBlock, PageHeader, Table, Tooltip } from 'vtex.styleguide'
+import { useRuntime } from 'vtex.render-runtime'
 
 import WarehouseContext from '../Context/WarehouseContext'
-import HomePage from '../HomePage/index'
+import ModalAdd from '../Modal/add'
+import ModalDelete from '../Modal/delete'
+import ModalTransfer from '../Modal/transfer'
 
 const ProductsTable: FC = () => {
   const provider = useContext(WarehouseContext)
 
-  if (!provider.valid) return <HomePage></HomePage>
+  const { history} = useRuntime()
+
+  if(provider.modal != 0) return (<ModalAdd></ModalAdd>)
+  if(provider.modalDelete) return (<ModalDelete></ModalDelete>)
+  if(provider.modalTransfer) return (<ModalTransfer></ModalTransfer>)
 
   return (
     <>
       <PageBlock>
+      <PageHeader
+        title="Estoque futuro"
+        linkLabel="Inventário"
+        onLinkClick={(e: SyntheticEvent) => {
+          history.goBack()
+        }}
+      />
         <Table
           toolbar={{
-            inputSearch: {
-              value: provider.search.searchValue,
-              placeholder: 'Search stuff...',
-              onChange: (event: { target: { value: string } }) => {
-                provider.updateSearch(event.target.value)
-              },
-              onClear: () => {
-                provider.updateClear()
-              },
-            },
             newLine: {
-              label: 'Ações',
-              handleCallback: () => alert('handle new line callback'),
-              actions: [
-                'Adicionar novo estoque futuro',
-                'Trocar SKU e/ou Estoque',
-              ].map((label, indexOf) => ({
-                label,
-                onClick: () => {
-                  provider.actions(indexOf)
-                },
-              })),
-            },
-            fields: {
-              label: 'Toggle visible fields',
-              showAllLabel: 'Show All',
-              hideAllLabel: 'Hide All',
-            },
-            density: {
-              buttonLabel: 'Line density',
-              lowOptionLabel: 'Low',
-              mediumOptionLabel: 'Medium',
-              highOptionLabel: 'High',
+              label:'Adicionar novo estoque futuro',
+              handleCallback: () => provider.newSupplyLot(),
             },
           }}
           totalizers={[

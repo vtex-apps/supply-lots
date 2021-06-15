@@ -35,6 +35,9 @@ declare module 'vtex.styleguide' {
   export const IconSearch
   export const IconFailure
   export const Divider
+  export const DatePicker
+  export const Dropdown
+  export const TimePicker
   // eslint-disable-next-line @typescript-eslint/naming-convention
   export const EXPERIMENTAL_Select
   // eslint-disable-next-line @typescript-eslint/naming-convention
