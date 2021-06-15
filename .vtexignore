@@ -1,0 +1,12 @@
+.git/
+react/node_modules/
+node_modules/
+.eslintrc
+.gitignore
+.vscode
+package.json
+README.md
+CHANGELOG.md
+react/**/__tests__/**
+react/**/__mocks__/**
+react/testUtils/**

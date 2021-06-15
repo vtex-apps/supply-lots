@@ -1,14 +1,16 @@
 /* eslint-disable vtex/prefer-early-return */
 /* eslint-disable func-names */
-import type { FC, SyntheticEvent } from 'react'
+import { FC, SyntheticEvent, useEffect } from 'react'
 import React, { useMemo, useState } from 'react'
-import { useLazyQuery } from 'react-apollo'
+import { useLazyQuery, useQuery } from 'react-apollo'
 import {
   IconDelete,
   IconExternalLinkMini,
   IconEdit,
   Tag,
   ButtonWithIcon,
+  Tooltip,
+  Button,
 } from 'vtex.styleguide'
 
 import WarehouseContext from '../Context/WarehouseContext'
@@ -21,35 +23,37 @@ const initialState = {
 }
 
 const initialSku = {
-  id: '',
+  id: '1',
   name: '',
 }
 
 const initialWarehouse = {
-  id: '',
+  id: '1db5eb2',
   name: '',
 }
 
+const actionsFalse = {
+  1: true,
+  2: false,
+  3: false,
+  4: false,
+  5: false,
+  6: false,
+  7: false,
+  8: false,
+  9: false,
+  10: false,
+}
+
 const WarehouseProvider: FC = (props) => {
-  const [search, setSearch] = useState(initialState)
   const [warehouse, setWarehouse] = useState<Warehouse>(initialWarehouse)
   const [sku, setSku] = useState<Sku>(initialSku)
-  const [valid, setValid] = useState(false)
-
-  function reformatDate(dateStr: string) {
-    const date = dateStr.split('T')
-    const dArr = date[0].split('-') // ex input "2010-01-18"
-
-    return `${dArr[2]}/${dArr[1]}/${dArr[0]}` // ex out: "18/01/10"
-  }
-
-  function updateSearch(searchValue: string) {
-    setSearch({ ...initialState, searchValue })
-  }
-
-  function updateClear() {
-    setSearch({ ...initialState })
-  }
+  const [date, setDate] = useState<Date>()
+  const [keep, setKeep] = useState<boolean>()
+  const [items, setItems] = useState<number>()
+  const [modal, setModal] = useState(0)
+  const [modalDelete, setDelete] = useState(false)
+  const [modalTransfer, setTransfer] = useState(false)
 
   function updateSku(object: Sku) {
     setSku({ ...sku, ...object })
@@ -58,37 +62,55 @@ const WarehouseProvider: FC = (props) => {
   function updateWarehouse(object: Warehouse) {
     setWarehouse({ ...warehouse, ...object })
   }
+  function reformatDate(dateStr: string) {
+    const date = dateStr.split('T')
+    const dArr = date[0].split('-') // ex input "2010-01-18"
 
-  const [loadValue, { data }] = useLazyQuery(getSkuAndWarehouseNames)
-  const [loadListSupplyLots, { data: dataListSupplyLots }] =
-    useLazyQuery(listSupplyLots)
+    return `${dArr[2]}/${dArr[1]}/${dArr[0]}` // ex out: "18/01/10"
+  }
 
-  const isValid = useMemo(() => {
-    return (
-      data?.getSkuAndWarehouseNames?.skuName &&
-      data?.getSkuAndWarehouseNames?.warehouseName
-    )
-  }, [data])
+  const { data: dataListSupplyLots } =
+    useQuery(listSupplyLots,  {
+      variables: { skuId: sku.id, warehouseId: warehouse.id },
+    });
 
-  useMemo(() => {
-    if (isValid) {
-      setValid(true)
-      updateSku({ name: data.getSkuAndWarehouseNames.skuName })
-      updateWarehouse({ name: data.getSkuAndWarehouseNames.warehouseName })
-    }
-  }, [isValid])
+  function newSupplyLot() {
+    setModal(1)
+    setDate(undefined)
+    setKeep(undefined)
+    setItems(undefined)
+  }
 
-  const loadSupplyLots = useMemo(() => {
-    if (isValid) {
-      loadListSupplyLots({
-        variables: { skuId: sku.id, warehouseId: warehouse.id },
-      })
-    }
-  }, [isValid])
+
+  async function clickEdit(index: number, skuId: string, warehouseId: string, supplyLotId: string) {
+    setModal(2)
+    const date = new Date(dataListSupplyLots?.listSupplyLots[index]?.dateOfSupplyUtc)
+    setDate(date)
+    setItems(dataListSupplyLots?.listSupplyLots[index]?.totalQuantity)
+    setKeep(dataListSupplyLots?.listSupplyLots[index]?.keepSellingAfterExpiration)
+  }
+
+  function clickDelete(
+    skuId: string,
+    warehouseId: string,
+    supplyLotId: string
+  ) {
+    setDelete(true)
+    // Deletar
+  }
+
+  function clickTransfer(
+    skuId: string,
+    warehouseId: string,
+    supplyLotId: string
+  ) {
+    setTransfer(true)
+    // Transferir
+  }
 
   const listSupplyLotsValues = useMemo(() => {
-    const tableValues = [{}]
-
+    const tableValues: any[] = []
+    
     // eslint-disable-next-line array-callback-return
     dataListSupplyLots?.listSupplyLots.map(function (
       values: {
@@ -100,9 +122,8 @@ const WarehouseProvider: FC = (props) => {
       indexOf: number
     ) {
       const value = {
-        index: indexOf + 1,
-        name: values.supplyLotId,
-        date: reformatDate(values.dateOfSupplyUtc),
+        index: indexOf+1,
+        date: reformatDate(values.dateOfSupplyUtc),     
         total: values.totalQuantity,
         keepSelling: values.keepSellingAfterExpiration ? 'Sim' : 'Não',
         color: colorLabel(
@@ -110,6 +131,7 @@ const WarehouseProvider: FC = (props) => {
           values.dateOfSupplyUtc
         ),
         actions: {
+          index: indexOf,
           skuId: sku.id,
           warehouseId: warehouse.id,
           supplyLotId: values.supplyLotId,
@@ -117,6 +139,7 @@ const WarehouseProvider: FC = (props) => {
       }
 
       tableValues.push(value)
+      
     })
 
     return tableValues
@@ -126,7 +149,7 @@ const WarehouseProvider: FC = (props) => {
     keepSellingAfterExpiration: boolean,
     dateOfSupplyUtc: string
   ) {
-    let color = 'rgb(0, 187, 212)'
+    let color = '#8bc34a'
     let label = 'Regular'
     const date = new Date()
     const dateUTC = date.toUTCString()
@@ -135,68 +158,29 @@ const WarehouseProvider: FC = (props) => {
     const secondsNow = Date.parse(dateUTC)
 
     if (secondsdateOfSupplyUtc < secondsNow && !keepSellingAfterExpiration) {
-      label = 'Expirou'
-      color = 'rgb(20, 32, 50)'
+      label = 'Expirado'
+      color = 'red'
     } else if (
       secondsdateOfSupplyUtc < secondsNow &&
       keepSellingAfterExpiration
     ) {
-      label = 'Expirou e vendendo'
+      label = 'Expirado e vendendo'
       color = 'red'
     } else if (
       secondsdateOfSupplyUtc > secondsNow &&
       secondsdateOfSupplyUtc - secondsNow < 259200000
     ) {
       label = 'Expirando'
-      color = 'rgb(214, 216, 224)'
+      color = 'yellow'
     }
 
     return { color, label }
-  }
-
-  async function checkValues(event: SyntheticEvent) {
-    event.preventDefault()
-    if (sku.id && warehouse.id) {
-      loadValue({ variables: { skuId: sku.id, warehouseId: warehouse.id } })
-    }
-  }
-
-  function newSupplyLot() {
-    // Adicionar new supply lots
-  }
-
-  function actions(indexOf: number) {
-    if (indexOf === 0) newSupplyLot()
-    else if (indexOf === 1) setValid(false)
-  }
-
-  function clickEdit(skuId: string, warehouseId: string, supplyLotId: string) {
-    // editar
-  }
-
-  function clickDelete(
-    skuId: string,
-    warehouseId: string,
-    supplyLotId: string
-  ) {
-    // Deletar
-  }
-
-  function clickTransfer(
-    skuId: string,
-    warehouseId: string,
-    supplyLotId: string
-  ) {
-    // Transferir
   }
 
   const schemaTable = {
     properties: {
       index: {
         title: 'Indice',
-      },
-      name: {
-        title: 'Nome',
       },
       date: {
         title: 'Data de chegada',
@@ -221,35 +205,44 @@ const WarehouseProvider: FC = (props) => {
         title: 'Ações',
         cellRenderer: ({ cellData }: any) => {
           const value = `${cellData?.skuId}, ${cellData?.warehouseId},  ${cellData?.supplyLotId}`
-
           return (
             <>
-              <ButtonWithIcon
-                icon={<IconEdit />}
+            <Tooltip label="Editar estoque futuro">
+              <Button
+                icon={true}
                 variation="tertiary"
+                autoComplete="teste"
                 onClick={(e: SyntheticEvent) => {
                   e.preventDefault()
                   clickEdit(
-                    cellData.skuId,
-                    cellData.warehouseId,
-                    cellData.supplyLotId
+                    cellData?.index,
+                    cellData?.skuId,
+                    cellData?.warehouseId,
+                    cellData?.supplyLotId
                   )
-                }}
-              ></ButtonWithIcon>
-              <ButtonWithIcon
-                icon={<IconDelete />}
-                variation="tertiary"
-                onClick={(e: SyntheticEvent) => {
-                  e.preventDefault()
-                  clickDelete(
-                    cellData.skuId,
-                    cellData.warehouseId,
-                    cellData.supplyLotId
-                  )
-                }}
-              ></ButtonWithIcon>
-              <ButtonWithIcon
-                icon={<IconExternalLinkMini />}
+                }
+                
+              }
+              ><IconEdit /></Button>
+              </Tooltip>
+              <Tooltip label="Excluir estoque futuro">
+                 <Button
+                  icon={true}
+                  variation="tertiary"
+                  onClick={(e: SyntheticEvent) => {
+                    e.preventDefault()
+                    clickDelete(
+                      cellData.skuId,
+                      cellData.warehouseId,
+                      cellData.supplyLotId
+                    )
+                  }}
+                  ><IconDelete /></Button>
+              </Tooltip>
+              <Tooltip label="Transferir estoque futuro">
+
+              <Button
+                icon={true}
                 variation="tertiary"
                 onClick={(e: SyntheticEvent) => {
                   e.preventDefault()
@@ -259,10 +252,11 @@ const WarehouseProvider: FC = (props) => {
                     cellData.supplyLotId
                   )
                 }}
-              ></ButtonWithIcon>
+              ><IconExternalLinkMini /></Button>
+              </Tooltip>
             </>
           )
-        },
+          }
       },
     },
   }
@@ -270,18 +264,23 @@ const WarehouseProvider: FC = (props) => {
   return (
     <WarehouseContext.Provider
       value={{
-        updateSearch,
-        updateClear,
-        updateSku,
-        updateWarehouse,
         warehouse,
         sku,
-        search,
-        valid,
-        checkValues,
-        actions,
+        newSupplyLot,
         listSupplyLotsValues,
         schemaTable,
+        modal,
+        setModal,
+        setDate,
+        date,
+        setKeep, 
+        keep,
+        items,
+        setItems,
+        modalDelete,
+        setDelete,
+        modalTransfer,
+        setTransfer
       }}
     >
       {props.children}
@@ -290,3 +289,8 @@ const WarehouseProvider: FC = (props) => {
 }
 
 export default WarehouseProvider
+
+function cancellEdit(skuId: any, warehouseId: any, supplyLotId: any) {
+  throw new Error('Function not implemented.')
+}
+

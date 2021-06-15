@@ -1,5 +1,5 @@
-query listSupplyLots($skuId: String!, $warehouseId: String!) {
-  listSupplyLots(skuId: $skuId, warehouseId: $warehouseId) {
+query listSupplyLots($skuId: ID!, $warehouseId: ID!, $supplyLotId: ID) {
+  listSupplyLots(skuId: $skuId, warehouseId: $warehouseId, supplyLotId: $supplyLotId) {
     supplyLotId
     skuId
     warehouseId
