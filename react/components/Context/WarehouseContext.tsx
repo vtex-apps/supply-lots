@@ -4,7 +4,6 @@ import React from 'react'
 interface WarehouseContextType {
   warehouse: Warehouse
   sku: Sku
-  checkValues: () => void
   newSupplyLot: () => void
   listSupplyLotsValues: any
   schemaTable: any
@@ -24,7 +23,6 @@ interface WarehouseContextType {
 const WarehouseContext = React.createContext<WarehouseContextType>({
   warehouse: {},
   sku: {},
-  checkValues: () => {},
   newSupplyLot: () => {},
   listSupplyLotsValues: {},
   schemaTable: {},

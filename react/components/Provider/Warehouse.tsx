@@ -2,7 +2,7 @@
 /* eslint-disable func-names */
 import { FC, SyntheticEvent, useEffect } from 'react'
 import React, { useMemo, useState } from 'react'
-import { useLazyQuery } from 'react-apollo'
+import { useLazyQuery, useQuery } from 'react-apollo'
 import {
   IconDelete,
   IconExternalLinkMini,
@@ -69,42 +69,10 @@ const WarehouseProvider: FC = (props) => {
     return `${dArr[2]}/${dArr[1]}/${dArr[0]}` // ex out: "18/01/10"
   }
 
-  const [loadValue, { data }] = useLazyQuery(getSkuAndWarehouseNames)
-  const [loadListSupplyLots, { data: dataListSupplyLots }] =
-    useLazyQuery(listSupplyLots)
-
-  const isValid = useMemo(() => {
-    return (
-      data?.getSkuAndWarehouseNames?.skuName &&
-      data?.getSkuAndWarehouseNames?.warehouseName
-    )
-  }, [data])
-
-  useMemo(() => {
-    if (isValid) {
-      updateSku({ name: data.getSkuAndWarehouseNames.skuName })
-      updateWarehouse({ name: data.getSkuAndWarehouseNames.warehouseName })
-    }
-  }, [isValid])
-
-  const loadSupplyLots = useMemo(() => {
-    if (isValid) {
-      loadListSupplyLots({
-        variables: { skuId: sku.id, warehouseId: warehouse.id },
-      })
-    }
-  }, [isValid])
-
-  useEffect(() => {
-    // Atualiza o titulo do documento usando a API do browser
-    checkValues()
-  }, []);
-
-  async function checkValues() {
-    if (sku.id && warehouse.id) {
-      loadValue({ variables: { skuId: sku.id, warehouseId: warehouse.id } })
-    }
-  }
+  const { data: dataListSupplyLots } =
+    useQuery(listSupplyLots,  {
+      variables: { skuId: sku.id, warehouseId: warehouse.id },
+    });
 
   function newSupplyLot() {
     setModal(1)
@@ -298,7 +266,6 @@ const WarehouseProvider: FC = (props) => {
       value={{
         warehouse,
         sku,
-        checkValues,
         newSupplyLot,
         listSupplyLotsValues,
         schemaTable,
