@@ -1,5 +1,18 @@
 type Query {
   """
+  Check if a SKU and a Warehouse exist by their IDs and get their names
+  """
+  getSkuAndWarehouseNames(
+    """
+    SKU ID to be checked
+    """
+    skuId: String!
+    """
+    Warehouse ID to be checked
+    """
+    warehouseId: String!
+  ): [String]
+  """
   List all Supply Lots of a SKU scheduled to arrive at a Warehouse
   """
   listSupplyLots(
@@ -15,6 +28,10 @@ type Query {
     ID of the Supply Lot, in the case the Query is used to verify if a ID was already used
     """
     supplyLotId: ID
+    """
+    Whether to ignore Supply Lots with a totalQuantity of 0 (true by default, to ignore Deleted Supply Lots).
+    """
+    filterZeros: Boolean = true
   ): [SupplyLot]
 }
 

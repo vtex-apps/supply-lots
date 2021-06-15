@@ -1,20 +1,22 @@
+//import uuid from 'uuid'
+
 export const listSupplyLots = (
   _: any,
-  { skuId, warehouseId, supplyLotId}: { skuId: string, warehouseId: string, supplyLotId?: string },
+  { skuId, warehouseId, supplyLotId, filterZeros}: { skuId: string, warehouseId: string, supplyLotId?: string, filterZeros: boolean },
   { clients: { supplyLot } }: Context
 ) => supplyLot.list(skuId, warehouseId, supplyLotId)
+  .then(list => filterZeros ? 
+    list.filter(lot => lot.totalQuantity > 0) :
+    list
+  )
 
-export const setSupplyLot = async (
+export const setSupplyLot = (
   _: any,
-  { supplyLotData, updateExisting }: { supplyLotData: SupplyLotInterface, updateExisting: boolean },
+  { supplyLotData }: { supplyLotData: SupplyLotInterface },
   { clients: { supplyLot } }: Context
-) => {
-  if (!updateExisting) {
-    const [existingData] = await supplyLot.list(supplyLotData.skuId, supplyLotData.warehouseId, supplyLotData.supplyLotId)
-    if (existingData.transfer?.isTransfered == true || existingData.dateOfSupplyUtc != null) return false
-  }
-  return supplyLot.set(supplyLotData)
-}
+) => (supplyLotData.supplyLotId = supplyLotData.supplyLotId || Math.random().toString()) /*uuid.v4()*/
+  && supplyLot.set(supplyLotData)
+
 export const transferSupplyLot = (
   _: any,
   { skuId, warehouseId, supplyLotId }: { skuId: string, warehouseId: string, supplyLotId: string },

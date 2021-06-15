@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "lib": ["es2017", "dom"],
     "module": "esnext",
     "moduleResolution": "node",

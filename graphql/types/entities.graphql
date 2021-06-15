@@ -54,7 +54,7 @@ type SupplyLot {
   """
   ID of the Supply Lot in which the SKU's scheduling should be considered
   """
-  supplyLotId: ID!
+  supplyLotId: ID
   """
   SKU which will be scheduled to arrive in the Supply Lot
   """
