@@ -1,4 +1,4 @@
-//import uuid from 'uuid'
+import { v4 } from 'uuid'
 
 export const listSupplyLots = (
   _: any,
@@ -14,7 +14,7 @@ export const setSupplyLot = (
   _: any,
   { supplyLotData }: { supplyLotData: SupplyLotInterface },
   { clients: { supplyLot } }: Context
-) => (supplyLotData.supplyLotId = supplyLotData.supplyLotId || Math.random().toString()) /*uuid.v4()*/
+) => (supplyLotData.supplyLotId = supplyLotData.supplyLotId || v4())
   && supplyLot.set(supplyLotData)
 
 export const transferSupplyLot = (
