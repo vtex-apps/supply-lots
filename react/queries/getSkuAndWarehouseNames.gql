@@ -1,0 +1,3 @@
+query getSkuAndWarehouseNames($skuId: String!, $warehouseId: String!) {
+  getSkuAndWarehouseNames(skuId: $skuId, warehouseId: $warehouseId) 
+}

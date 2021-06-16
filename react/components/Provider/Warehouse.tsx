@@ -29,12 +29,12 @@ const initialState = {
 }
 
 const initialSku = {
-  id: '1',
+  id: '',
   name: '',
 }
 
 const initialWarehouse = {
-  id: '1db5eb2',
+  id: '',
   name: '',
 }
 
@@ -58,6 +58,7 @@ const schemaYup = yup.object().shape({
 })
 
 const WarehouseProvider: FC = (props) => {
+  //Definições
   const [warehouse, setWarehouse] = useState<Warehouse>(initialWarehouse)
   const [sku, setSku] = useState<Sku>(initialSku)
   const [date, setDate] = useState<Date>()
@@ -68,6 +69,44 @@ const WarehouseProvider: FC = (props) => {
   const [modalTransfer, setTransfer] = useState(false)
   const [text, setText] = useState('')
   const [id, setId] = useState('')
+
+  const { data: dataListSupplyLots, refetch } =
+    useQuery(listSupplyLots,  {
+      variables: { skuId: sku.id, warehouseId: warehouse.id },
+    });
+
+    const { data: dataNames } =
+    useQuery(getSkuAndWarehouseNames,  {
+      variables: { skuId: sku.id, warehouseId: warehouse.id },
+    });
+
+  const [setSupplyLotValue] = useMutation(setSupplyLot)
+  const [deleteSupplyLotValue] = useMutation(deleteSupplyLot)
+  const [transferSupplyLotValue] = useMutation(transferSupplyLot)
+
+  //Adicionando informações do sku e da warehouse 
+  useEffect(() => {
+    var url = window.location.href; 
+    var values = url.split('?'); 
+    
+    if (values[1] !== undefined) {
+      values = values[1].split('&');
+      const idSku = values[0].split('=')
+      const idWarehouse = values[1].split('=')
+
+      updateSku({id: idSku[1]})
+      updateWarehouse({id: idWarehouse[1]})
+    }
+
+  }, [])
+
+  useMemo(() => {
+   if(dataNames){
+    updateSku({name: dataNames?.getSkuAndWarehouseNames[0]})
+    updateWarehouse({name:dataNames?.getSkuAndWarehouseNames[1]})
+   } 
+
+  }, [dataNames])
 
   function updateSku(object: Sku) {
     setSku({ ...sku, ...object })
@@ -81,51 +120,9 @@ const WarehouseProvider: FC = (props) => {
     setItems(object)
   }
 
-  function convert(date: Date) {
-      const mnth = ("0" + (date.getMonth() + 1)).slice(-2)
-      const day = ("0" + date.getDate()).slice(-2);
-    return [date.getFullYear(), mnth, day].join("-");
-  }
-
-  async function validationFuntion(key: string) {
-    let text = ''
-
-    let object: Date | boolean | number | undefined = date
-    if(key === 'keepSellingAfterExpiration') object = keep
-    else if(key === 'totalQuantity') object = items
-
-      try {
-        schemaYup.validateSyncAt(key, object)
-      } catch (e) {
-        if (
-          key === 'totalQuantity' &&
-          e.errors[0] === 'zipCode must be exactly 8 characters'
-        ) text = "o número precisa ser positivo"
-        else text = 'Preencha o campo obrigatório'
-      }
-    
-    return text
-  }
-
-  const { data: dataListSupplyLots, refetch } =
-    useQuery(listSupplyLots,  {
-      variables: { skuId: sku.id, warehouseId: warehouse.id },
-    });
-
-  const [setSupplyLotValue] = useMutation(setSupplyLot)
-  const [deleteSupplyLotValue] = useMutation(deleteSupplyLot)
-  const [transferSupplyLotValue] = useMutation(transferSupplyLot)
-
-
-  function newSupplyLot() {
-    setModal(1)
-    setDate(undefined)
-    setKeep(undefined)
-    setItems(undefined)
-  }
-
-
-async function validation() {
+  
+  //Funções da tabela
+  async function validation() {
   const object = { dateOfSupplyUtc: date,
     keepSellingAfterExpiration: keep,
     totalQuantity: items}
@@ -140,6 +137,12 @@ async function validation() {
   })
 
   return retorno
+  }
+
+  function convert(date: Date) {
+    const mnth = ("0" + (date.getMonth() + 1)).slice(-2)
+    const day = ("0" + date.getDate()).slice(-2);
+  return [date.getFullYear(), mnth, day].join("-");
 }
 
   async function addSupplyLot(){
@@ -164,6 +167,13 @@ async function validation() {
       refetch()
       console.log("retorno: ", retorno)
     }
+  }
+
+  function newSupplyLot() {
+    setModal(1)
+    setDate(undefined)
+    setKeep(undefined)
+    setItems(undefined)
   }
 
   async function editSupplyLot(){
@@ -211,16 +221,6 @@ async function validation() {
     console.log("retorno: ", retorno)
   }
 
-  async function transferSupplyLots(){
-    console.log(sku.id, warehouse.id, id)
-    setTransfer(false)
-    const retorno = await transferSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
-
-    refetch()
-    console.log("retorno: ", retorno)
-  }
-
-
   function clickDelete(
     skuId: string,
     warehouseId: string,
@@ -231,15 +231,27 @@ async function validation() {
 
   }
 
+  async function transferSupplyLots(){
+    console.log(sku.id, warehouse.id, id)
+    setTransfer(false)
+    const retorno = await transferSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
+
+    refetch()
+    console.log("retorno: ", retorno)
+  }
+
   function clickTransfer(
     skuId: string,
     warehouseId: string,
     supplyLotId: string
   ) {
     setTransfer(true)
+    setId(supplyLotId)
+
     // Transferir
   }
 
+  //Construindo a tabela
   const listSupplyLotsValues = useMemo(() => {
     const tableValues: any[] = []
     
