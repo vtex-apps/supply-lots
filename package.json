@@ -7,8 +7,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\""
   },
   "husky": {
-    "hooks": {
-    }
+    "hooks": {}
   },
   "lint-staged": {
     "*.{ts,js,tsx,jsx}": [
@@ -30,7 +29,8 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "react-intl": "^5.18.2"
+    "react-intl": "^5.18.2",
+    "yup": "^0.32.9"
   },
   "version": "0.0.0"
 }

@@ -1,5 +1,5 @@
 {
-  "admin.app.example": {
+  "admin.app.supply-lots-inventory": {
     "component": "SupplyLots",
     "path": "/admin/app/supply-lots-inventory"
   }

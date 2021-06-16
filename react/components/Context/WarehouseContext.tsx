@@ -13,12 +13,15 @@ interface WarehouseContextType {
   date: Date | undefined
   setKeep: (keep: boolean) => void
   keep: boolean | undefined
-  setItems: (keep: number) => void
+  updateItems: (object: number) => void
   items: number | undefined
   modalDelete: boolean | undefined
   setDelete: (modalDelete: boolean) => void
   modalTransfer: boolean | undefined
   setTransfer: (modalDelete: boolean) => void
+  addSupplyLot:  () => void
+  editSupplyLot:  () => void
+  text: string
 }
 const WarehouseContext = React.createContext<WarehouseContextType>({
   warehouse: {},
@@ -32,12 +35,15 @@ const WarehouseContext = React.createContext<WarehouseContextType>({
   date: new Date(),
   setKeep: () => {},
   keep: false,
-  setItems: () => {},
+  updateItems: () => {},
   items: 0,
   modalDelete: false,
   setDelete: () => {},
   modalTransfer: false,
   setTransfer: () => {},
+  addSupplyLot: () => {},
+  editSupplyLot: () => {},
+  text: ''
 })
 
 export default WarehouseContext

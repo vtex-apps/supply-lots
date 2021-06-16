@@ -34,6 +34,7 @@ declare module 'vtex.styleguide' {
   export const IconClear
   export const IconSearch
   export const IconFailure
+  export const IconInfo
   export const Divider
   export const DatePicker
   export const Dropdown
