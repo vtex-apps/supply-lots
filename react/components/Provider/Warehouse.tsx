@@ -132,7 +132,6 @@ const WarehouseProvider: FC = (props) => {
 
     if(err.errors[0] === "totalQuantity must be a positive number") setText('O total de lotes precisa ser maior que 0')
     else setText('Preencha todos os campos')
-    console.log(err.names, err.errors)
     return false
   })
 
@@ -147,7 +146,6 @@ const WarehouseProvider: FC = (props) => {
 
   async function addSupplyLot(){
     const valid = await validation()
-    console.log("valid", valid)
     if(valid){
       setModal(0)
       let dateValue = '0000-00-00'
@@ -160,12 +158,10 @@ const WarehouseProvider: FC = (props) => {
         totalQuantity: items ? items : 0
       }
 
-      console.log(supplyLotData)
 
-      const retorno = await setSupplyLotValue ({ variables: { supplyLotData } })
+      await setSupplyLotValue ({ variables: { supplyLotData } })
 
       refetch()
-      console.log("retorno: ", retorno)
     }
   }
 
@@ -178,7 +174,6 @@ const WarehouseProvider: FC = (props) => {
 
   async function editSupplyLot(){
     const valid = await validation()
-    console.log("valid", valid)
     if(valid){
       setModal(0)
       let dateValue = '0000-00-00'
@@ -193,12 +188,10 @@ const WarehouseProvider: FC = (props) => {
 
       }
 
-      console.log(supplyLotData)
 
-      const retorno = await setSupplyLotValue ({ variables: { supplyLotData } })
+      await setSupplyLotValue ({ variables: { supplyLotData } })
 
       refetch()
-      console.log("retorno: ", retorno)
     }
   }
 
@@ -214,11 +207,9 @@ const WarehouseProvider: FC = (props) => {
 
   async function deleteSupplyLots(){
     setDelete(false)
-    console.log(sku.id, warehouse.id, id)
-    const retorno = await deleteSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
+    await deleteSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
 
     refetch()
-    console.log("retorno: ", retorno)
   }
 
   function clickDelete(
@@ -232,12 +223,10 @@ const WarehouseProvider: FC = (props) => {
   }
 
   async function transferSupplyLots(){
-    console.log(sku.id, warehouse.id, id)
     setTransfer(false)
-    const retorno = await transferSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
+    await transferSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
 
     refetch()
-    console.log("retorno: ", retorno)
   }
 
   function clickTransfer(

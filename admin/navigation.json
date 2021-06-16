@@ -1,16 +1,11 @@
 {
   "section": "orders",
-  "titleId": "Teste",
   "subSection": "inventoryAndShipping",
   "subSectionItems": [
     {
       "labelId": "admin/inventory",
-      "path": "/admin/supply-lots-inventory",
-      "isNew": true,
-      "position": {
-        "index": 5,
-        "operation": "add"
-      }
+      "path": "/admin/supply-lots-inventory"
+    
     }
   ]
 }
