@@ -1,0 +1,5 @@
+mutation deleteSupplyLot($skuId: ID!,$warehouseId: ID!, $supplyLotId: ID!){
+    deleteSupplyLot(skuId: $skuId, warehouseId: $warehouseId, supplyLotId: $supplyLotId )
+}
+    
+    

@@ -27,7 +27,7 @@ const ModalDelete: FC = () => {
                 </Button>
               </span>
               <span>
-                <Button variation="primary" onClick={(e: SyntheticEvent) => { e.preventDefault; closeModal()}}>
+                <Button variation="primary" onClick={(e: SyntheticEvent) => { e.preventDefault; provider.deleteSupplyLots();}}>
                   Deletar
                 </Button>
               </span>
@@ -40,7 +40,7 @@ const ModalDelete: FC = () => {
           Excluir estoque futuro
         </div>
         
-          <div className="pv3 t-body c-muted-2">Tem certeza que deseja excluir esse estoque futuro?</div>
+          <div className="pv3 t-body c-muted-2">Tem certeza que deseja excluir esse estoque futuro? (Todas as compras feitas com esses prodtos serão canceladas)</div>
         
       </div>
         </Modal>

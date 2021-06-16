@@ -21,6 +21,8 @@ interface WarehouseContextType {
   setTransfer: (modalDelete: boolean) => void
   addSupplyLot:  () => void
   editSupplyLot:  () => void
+  deleteSupplyLots:  () => void
+  transferSupplyLots: () => void
   text: string
 }
 const WarehouseContext = React.createContext<WarehouseContextType>({
@@ -43,6 +45,8 @@ const WarehouseContext = React.createContext<WarehouseContextType>({
   setTransfer: () => {},
   addSupplyLot: () => {},
   editSupplyLot: () => {},
+  deleteSupplyLots: () => {},
+  transferSupplyLots: () => {},
   text: ''
 })
 

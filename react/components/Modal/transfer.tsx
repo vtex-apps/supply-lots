@@ -27,7 +27,7 @@ const ModalTransfer: FC = () => {
                 </Button>
               </span>
               <span>
-                <Button variation="primary" onClick={(e: SyntheticEvent) => { e.preventDefault; closeModal()}}>
+                <Button variation="primary" onClick={(e: SyntheticEvent) => { e.preventDefault; provider.transferSupplyLots(); }}>
                   Transferir
                 </Button>
               </span>

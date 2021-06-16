@@ -20,7 +20,8 @@ import WarehouseContext from '../Context/WarehouseContext'
 import getSkuAndWarehouseNames from '../../queries/getSkuAndWarehouseNames.gql'
 import listSupplyLots from '../../queries/listSupplyLots.gql'
 import setSupplyLot from '../../queries/setSupplyLot.gql'
-import SupplyLots from '../../SupplyLots'
+import deleteSupplyLot from '../../queries/deleteSupplyLot.gql'
+import transferSupplyLot from '../../queries/transferSupplyLot.gql'
 
 const initialState = {
   searchValue: '',
@@ -106,14 +107,14 @@ const WarehouseProvider: FC = (props) => {
     return text
   }
 
-  
-
   const { data: dataListSupplyLots, refetch } =
     useQuery(listSupplyLots,  {
       variables: { skuId: sku.id, warehouseId: warehouse.id },
     });
 
   const [setSupplyLotValue] = useMutation(setSupplyLot)
+  const [deleteSupplyLotValue] = useMutation(deleteSupplyLot)
+  const [transferSupplyLotValue] = useMutation(transferSupplyLot)
 
 
   function newSupplyLot() {
@@ -191,8 +192,6 @@ async function validation() {
     }
   }
 
-
-
   async function clickEdit(index: number, skuId: string, warehouseId: string, supplyLotId: string) {
     setModal(2)
     const dateValue = new Date(dataListSupplyLots?.listSupplyLots[index]?.dateOfSupplyUtc)
@@ -201,9 +200,26 @@ async function validation() {
     setKeep(dataListSupplyLots?.listSupplyLots[index]?.keepSellingAfterExpiration)
 
     setId(supplyLotId)
-    
-
   }
+
+  async function deleteSupplyLots(){
+    setDelete(false)
+    console.log(sku.id, warehouse.id, id)
+    const retorno = await deleteSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
+
+    refetch()
+    console.log("retorno: ", retorno)
+  }
+
+  async function transferSupplyLots(){
+    console.log(sku.id, warehouse.id, id)
+    setTransfer(false)
+    const retorno = await transferSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
+
+    refetch()
+    console.log("retorno: ", retorno)
+  }
+
 
   function clickDelete(
     skuId: string,
@@ -211,7 +227,8 @@ async function validation() {
     supplyLotId: string
   ) {
     setDelete(true)
-    // Deletar
+    setId(supplyLotId)
+
   }
 
   function clickTransfer(
@@ -428,6 +445,8 @@ async function validation() {
         setTransfer,
         addSupplyLot,
         editSupplyLot,
+        deleteSupplyLots,
+        transferSupplyLots,
         text
       }}
     >

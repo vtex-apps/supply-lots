@@ -1,0 +1,5 @@
+mutation transferSupplyLot($skuId: ID!,$warehouseId: ID!, $supplyLotId: ID!){
+    transferSupplyLot(skuId: $skuId, warehouseId: $warehouseId, supplyLotId: $supplyLotId )
+}
+    
+    
