@@ -23,7 +23,8 @@ interface WarehouseContextType {
   editSupplyLot:  () => void
   deleteSupplyLots:  () => void
   transferSupplyLots: () => void
-  text: string
+  text: string,
+  limit: boolean
 }
 const WarehouseContext = React.createContext<WarehouseContextType>({
   warehouse: {},
@@ -47,7 +48,8 @@ const WarehouseContext = React.createContext<WarehouseContextType>({
   editSupplyLot: () => {},
   deleteSupplyLots: () => {},
   transferSupplyLots: () => {},
-  text: ''
+  text: '',
+  limit: false
 })
 
 export default WarehouseContext

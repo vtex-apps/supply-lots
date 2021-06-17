@@ -7,6 +7,7 @@ import WarehouseContext from '../Context/WarehouseContext'
 import ModalAdd from '../Modal/add'
 import ModalDelete from '../Modal/delete'
 import ModalTransfer from '../Modal/transfer'
+import ModalLimit from '../Modal/limit'
 
 const ProductsTable: FC = () => {
   const provider = useContext(WarehouseContext)
@@ -16,6 +17,7 @@ const ProductsTable: FC = () => {
   if(provider.modal != 0) return (<ModalAdd></ModalAdd>)
   if(provider.modalDelete) return (<ModalDelete></ModalDelete>)
   if(provider.modalTransfer) return (<ModalTransfer></ModalTransfer>)
+
 
   return (
     <>
@@ -28,9 +30,10 @@ const ProductsTable: FC = () => {
         }}
       />
         <Table
+          fullWidth
           toolbar={{
             newLine: {
-              label:'Adicionar novo estoque futuro',
+              label: 'Adicionar novo estoque futuro',
               handleCallback: () => provider.newSupplyLot(),
             },
           }}

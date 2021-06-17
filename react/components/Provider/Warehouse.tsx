@@ -10,7 +10,6 @@ import {
   IconExternalLinkMini,
   IconEdit,
   Tag,
-  ButtonWithIcon,
   Tooltip,
   Button,
   IconInfo,
@@ -69,6 +68,9 @@ const WarehouseProvider: FC = (props) => {
   const [modalTransfer, setTransfer] = useState(false)
   const [text, setText] = useState('')
   const [id, setId] = useState('')
+  const [sortedBy, setSortedBy] = useState()
+  const [sortOrder, setSortOrder] = useState()
+  const [limit, setLimit] = useState(false)
 
   const { data: dataListSupplyLots, refetch } =
     useQuery(listSupplyLots,  {
@@ -138,19 +140,14 @@ const WarehouseProvider: FC = (props) => {
   return retorno
   }
 
-  function convert(date: Date) {
-    const mnth = ("0" + (date.getMonth() + 1)).slice(-2)
-    const day = ("0" + date.getDate()).slice(-2);
-  return [date.getFullYear(), mnth, day].join("-");
-}
-
   async function addSupplyLot(){
     const valid = await validation()
     if(valid){
       setModal(0)
+      setText('')
       let dateValue = '0000-00-00'
-      if(date != undefined) dateValue = convert(date)
-        const supplyLotData: SypplyLotInput ={
+      if(date != undefined) dateValue = date?.toISOString()
+        const supplyLotData: SupplyLotInput ={
         dateOfSupplyUtc: dateValue,
         keepSellingAfterExpiration: keep ? keep : false,
         skuId: sku.id ? sku.id : '',
@@ -176,9 +173,11 @@ const WarehouseProvider: FC = (props) => {
     const valid = await validation()
     if(valid){
       setModal(0)
+      setText('')
+
       let dateValue = '0000-00-00'
-      if(date != undefined) dateValue = convert(date)
-        const supplyLotData: SypplyLotInput ={
+      if(date != undefined) dateValue = date?.toISOString()
+        const supplyLotData: SupplyLotInput ={
         dateOfSupplyUtc: dateValue,
         keepSellingAfterExpiration: keep ? keep : false,
         skuId: sku.id ? sku.id : '',
@@ -195,9 +194,10 @@ const WarehouseProvider: FC = (props) => {
     }
   }
 
-  async function clickEdit(index: number, skuId: string, warehouseId: string, supplyLotId: string) {
+  async function clickEdit(index: number, supplyLotId: string) {
     setModal(2)
     const dateValue = new Date(dataListSupplyLots?.listSupplyLots[index]?.dateOfSupplyUtc)
+
     setDate(dateValue)
     setItems(dataListSupplyLots?.listSupplyLots[index]?.totalQuantity)
     setKeep(dataListSupplyLots?.listSupplyLots[index]?.keepSellingAfterExpiration)
@@ -213,8 +213,6 @@ const WarehouseProvider: FC = (props) => {
   }
 
   function clickDelete(
-    skuId: string,
-    warehouseId: string,
     supplyLotId: string
   ) {
     setDelete(true)
@@ -230,20 +228,19 @@ const WarehouseProvider: FC = (props) => {
   }
 
   function clickTransfer(
-    skuId: string,
-    warehouseId: string,
     supplyLotId: string
   ) {
     setTransfer(true)
     setId(supplyLotId)
-
-    // Transferir
   }
 
   //Construindo a tabela
   const listSupplyLotsValues = useMemo(() => {
     const tableValues: any[] = []
     
+    if(dataListSupplyLots?.listSupplyLots.length === 10 && !limit) setLimit(true)
+    else if (limit) setLimit(false)
+
     // eslint-disable-next-line array-callback-return
     dataListSupplyLots?.listSupplyLots.map(function (
       values: {
@@ -258,7 +255,7 @@ const WarehouseProvider: FC = (props) => {
     ) {
       const value = {
         index: indexOf+1,
-        date: reformatDate(values.dateOfSupplyUtc),     
+        date: (new Date(values.dateOfSupplyUtc)).toLocaleDateString(),     
         total: values.totalQuantity,
         reserved:values.reservedQuantity,
         available:values.availableQuantity,
@@ -281,13 +278,6 @@ const WarehouseProvider: FC = (props) => {
 
     return tableValues
   }, [dataListSupplyLots])
-
-  function reformatDate(dateStr: string) {
-    const date = dateStr.split('T')
-    const dArr = date[0].split('-') // ex input "2010-01-18"
-
-    return `${dArr[2]}/${dArr[1]}/${dArr[0]}` // ex out: "18/01/10"
-  }
 
   function colorLabel(
     keepSellingAfterExpiration: boolean,
@@ -325,9 +315,11 @@ const WarehouseProvider: FC = (props) => {
     properties: {
       index: {
         title: 'Indice',
+        width: 80
       },
       date: {
         title: 'Data de chegada',
+        minWidth: 100
       },
       total: {
         title: 'Total dos lotes',
@@ -339,6 +331,7 @@ const WarehouseProvider: FC = (props) => {
         title: "Disponível"
       },
       keepSelling: {
+        minWidth: 200,
         headerRenderer: () => {
           return (
             <>
@@ -356,6 +349,7 @@ const WarehouseProvider: FC = (props) => {
       },
       color: {
         title: 'Status',
+        minWidth:200,
         cellRenderer: ({ cellData }: any) => {
           return (
             <Tag color="#ffff" bgColor={cellData?.color}>
@@ -379,8 +373,6 @@ const WarehouseProvider: FC = (props) => {
                   e.preventDefault()
                   clickEdit(
                     cellData?.index,
-                    cellData?.skuId,
-                    cellData?.warehouseId,
                     cellData?.supplyLotId
                   )
                 }
@@ -394,11 +386,7 @@ const WarehouseProvider: FC = (props) => {
                   variation="tertiary"
                   onClick={(e: SyntheticEvent) => {
                     e.preventDefault()
-                    clickDelete(
-                      cellData.skuId,
-                      cellData.warehouseId,
-                      cellData.supplyLotId
-                    )
+                    clickDelete(cellData.supplyLotId)
                   }}
                   ><IconDelete /></Button>
               </Tooltip>
@@ -409,11 +397,7 @@ const WarehouseProvider: FC = (props) => {
                 variation="tertiary"
                 onClick={(e: SyntheticEvent) => {
                   e.preventDefault()
-                  clickTransfer(
-                    cellData.skuId,
-                    cellData.warehouseId,
-                    cellData.supplyLotId
-                  )
+                  clickTransfer(cellData.supplyLotId)
                 }}
               ><IconExternalLinkMini /></Button>
               </Tooltip>
@@ -448,7 +432,8 @@ const WarehouseProvider: FC = (props) => {
         editSupplyLot,
         deleteSupplyLots,
         transferSupplyLots,
-        text
+        text,
+        limit
       }}
     >
       {props.children}

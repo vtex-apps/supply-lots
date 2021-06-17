@@ -1,4 +1,4 @@
-interface SypplyLotInput {
+interface SupplyLotInput {
     supplyLotId?: string
     skuId: string
     warehouseId: string
