@@ -13,7 +13,9 @@
     "@vtex/api": "6.42.1",
     "@vtex/test-tools": "^1.0.0",
     "@vtex/tsconfig": "^0.5.6",
-    "typescript": "3.9.7"
+    "typescript": "3.9.7",
+    "vtex.render-runtime": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.128.4/public/@types/vtex.render-runtime",
+    "vtex.styleguide": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.143.0/public/@types/vtex.styleguide"
   },
   "scripts": {
     "lint": "tsc --noEmit --pretty"
