@@ -274,13 +274,23 @@ const WarehouseProvider: FC = (props) => {
     return tableValues
   }, [dataListSupplyLots])
 
+  function converter(dateConverter: string) {
+    const parts = dateConverter.split('/')
+
+    return new Date(
+      parseInt(parts[2], 10),
+      parseInt(parts[1], 10) - 1,
+      parseInt(parts[0], 10)
+    )
+  }
+
   function sortDateASC() {
     listSupplyLotsValues.sort(function (a, b) {
-      if (a.date > b.date) {
+      if (converter(a.date) > converter(b.date)) {
         return 1
       }
 
-      if (a.date < b.date) {
+      if (converter(a.date) < converter(b.date)) {
         return -1
       }
 
@@ -291,11 +301,11 @@ const WarehouseProvider: FC = (props) => {
 
   function sortDateDESC() {
     listSupplyLotsValues.sort(function (a, b) {
-      if (a.date < b.date) {
+      if (converter(a.date) < converter(b.date)) {
         return 1
       }
 
-      if (a.date > b.date) {
+      if (converter(a.date) > converter(b.date)) {
         return -1
       }
 
