@@ -6,20 +6,20 @@ The Supply Lots app is responsible for manage supply lots in the admin interface
 
 ## How to use
 
-1. É possível adicionar um novo supply lot ao clicar no botão "New Supply Lot". Ele abrirá um modal que deverá ser preenchido com as informações de a data de chegada, a quantidade de itens e o keep sellings. 
+1. You can save a new Supply Lot by clicking on the button "New Supply Lot". A modal box will open, where you can enter the Date of Supply, Item Quantity in the Lot and whether the Lot will still be used for reservations after the Date of Supply has expired.
 
 ![page](../master/docs/images/add.png)
 
-2. É possível editar um supply lot ao clicar no botão editar, com o desenho de uma lápis. Ele abrirá um modal prenchido com as informações do lote e poderá ser alterados os campos conforme a necessidade. 
+2. You can edit an existing Supply Lot by clicking on the Edit button, represented by a pencil icon. A modal box will open where you can edit any of the specified fields.
 
 ![edit](../master/docs/images/edit.png)
 ![edit2](../master/docs/images/edit2.png)
 
-3. É possível excluir um supply lot ao clicar no botão excluir, com o desenho de uma lixo. Ele abrirá um modal confirmando se o usuário deseja mesmo excluir o supply lote
+3. You can delete a Supply Lot by clicking on the Delete button, represented by a trash can icon.
 ![delete](../master/docs/images/delete.png)
 ![delete2](../master/docs/images/delete2.png)
 
-4. É possível transferir um supply lot ao clicar no botão transferir, com o desenho de um cubo com uma seta. Ele abrirá um modal confirmando se o usuário deseja mesmo transferir o supply lote
+4. You can transfer a Supply Lot to the active inventory by clicking on the Transfer button, represented by a a box and arrow icon.
 ![transfer](../master/docs/images/transfer.png)
 ![transfer2](../master/docs/images/transfer2.png)
 
