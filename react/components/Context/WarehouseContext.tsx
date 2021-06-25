@@ -28,6 +28,7 @@ interface WarehouseContextType {
   sortedByValue: string
   sortOrderValue: string
   sort: (sortOrder: any, sortedBy: any) => void
+  setText: (text: string) => void
 }
 const WarehouseContext = React.createContext<WarehouseContextType>({
   warehouse: {},
@@ -56,6 +57,7 @@ const WarehouseContext = React.createContext<WarehouseContextType>({
   sortedByValue: '',
   sortOrderValue: '',
   sort: () => {},
+  setText: () => {},
 })
 
 export default WarehouseContext

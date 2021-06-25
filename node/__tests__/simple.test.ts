@@ -27,5 +27,4 @@
 //     const result = await setSupplyLot('', supplyLotData, ctx)
 //     expect(result).toBe(true)
 //   })
-
 // })

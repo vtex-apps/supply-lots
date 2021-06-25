@@ -1,0 +1,42 @@
+Testes Funcionais
+
+0 - Ao entrar na página deverá ser preenchido automaticamente os campos de SKU ID, Produto, Estoque Id, nome do Estoque, e se houver supply lotes a tabela principal. Na tabela principal deverá conter:
+    + o indice, total de lotes, reservado e disponivel como numero
+    + data de chegada como data
+    + seguir vendendo como boolean (sim ou não)
+    + status deve ser preenchido com um texto e uma cor dependendo da data e do seguinr vendendo
+        > se a data for 4 dias maior que a data atual, o campo status devera ser verde com o texto 'Regular'
+        > se a data for de 3 a 1 dia maior que a data atual, o campo status deverá ser amarelo com o texto 'Expirando em X dias', tendo X igual a quantidade de dias que faltam para expirar
+        > se a data for menor que o dia atual e o seguir vendendo seja 'Sim', o campo status deverá ser vermelho com o texto 'Expirado e vendendo'
+        > se a data for menor que o dia atual e o seguir vendendo seja 'Não', o campo status deverá ser vermelho com o texto 'Expirado'
+    + ações deve contar com 3 botões:
+        > editar: com desenho de um lápis e com texto (que aparece ao passar o mouse pelo botão) sendo 'Editar'
+        > excluir: com desenho de um lixo e com texto (que aparece ao passar o mouse pelo botão) sendo 'Excluir'
+        > transferir: com desenho de uma caixa e uma seta e com texto (que aparece ao passar o mouse pelo botão) sendo 'Transferir'
+
+1 - Se clicar no PageHeader deve retornar para a página de gerenciar inventário no admin
+
+2 - Ao clicar no 'Criar estoque futuro' deve abrir um modal com 3 campos para serem preenchidos
+    + Data de chegada -> que deve permitir que escolha uma data em um calendário. E somente deverá permitar a escolha de uma data maior que o dia atual
+    + Total do lote -> deve permitir que se adicione um numero positivo maior que zero
+    + Seguir comprando -> deve permitir que se escolhe entre as opções: 'Sim' ou 'Não'
+  Caso um ou mais campos não forem preenchidos corretamnete ou não forem preenchidos, ao clicar no botão salvar, deverá aparecer um texto em vermelho no fim do modal com a infomrmação do erro 
+    Caso seja apertado em salvar e todos os campos estiverem preenchidos corretamente o supply lot é salvo e é recarregado a tabela para atualizar o valor
+    Caso seja apertado cancelar ou X no modal a ação de adicionar é suspensa
+
+3 - Ao clicar no botão editar deve abrir um modal com 3 campos para serem editados, os campos devem vir preenchidos de acordo com as informações já salvas anteriormente para o determinado supply lot a ser editado
+    + Data de chegada -> que deve permitir que escolha uma data em um calendário. E somente deverá permitar a escolha de uma data maior que o dia atual
+    + Total do lote -> deve permitir que se adicione um numero positivo maior que zero
+    + Seguir comprando -> deve permitir que se escolhe entre as opções: 'Sim' ou 'Não'
+    Caso um ou mais campos não forem preenchidos corretamnete ou permanecerem vazios, ao clicar no botão salvar, deverá aparecer um texto em vermelho no fim do modal com a infomrmação do erro 
+    Caso a data de chegada já ter passado (ser menor que a data atual) não será possivel que se altere o total do lote e seguinr comprando a não ser que se altere a data de chegada por uma data maior que o dia atual
+    Caso seja apertado em salvar e todos os campos estiverem preenchidos corretamente o supply lot é salvo e é recarregado a tabela para atualizar o valor
+    Caso seja apertado cancelar ou X no modal a ação de editar é suspensa
+
+4 - Ao clicar no botão excluir deve se abrir um modal com um desenho de lixeira e uma confirmação se o usuário quer mesmo excluir o supply lot
+    Caso seja apertado em deletar o supply lot é deletado e a tabela é atualizada
+    Caso seja apertado em cancelar ou X a operação é suspensa
+
+5 - Ao clicar no botão trasnferir deve se abrir um modal com um desenho de caixa com um seta e uma confirmação se o usuário quer mesmo transferir o supply lot, 
+    Caso seja apertado em transferir o supply lot é transferido e a tabela é atualizada
+    Caso seja apertado em cancelar ou X a operação é suspensa

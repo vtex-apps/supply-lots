@@ -21,6 +21,7 @@ const ModalAdd: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
 
   function closeModal() {
     provider.setModal(0)
+    provider.setText('')
   }
 
   const options = [

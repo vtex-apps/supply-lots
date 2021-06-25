@@ -227,7 +227,11 @@ const WarehouseProvider: FC = (props) => {
   const listSupplyLotsValues = useMemo(() => {
     const tableValues: any[] = []
 
-    if (dataListSupplyLots?.listSupplyLots.length === 8 && !limit) {
+    if (
+      dataListSupplyLots?.listSupplyLots.length === 8 &&
+      !limit &&
+      modal === 1
+    ) {
       setLimit(true)
     } else if (limit) {
       setLimit(false)
@@ -563,6 +567,7 @@ const WarehouseProvider: FC = (props) => {
         sortedByValue,
         sortOrderValue,
         sort,
+        setText,
       }}
     >
       {props.children}
