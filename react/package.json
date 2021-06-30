@@ -1,15 +1,18 @@
 {
   "name": "vtex.admin-example",
   "version": "0.0.1",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "devDependencies": {
+    "@testing-library/dom": "^8.0.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.0.0",
     "@types/node": "^11.12.1",
     "@types/react": "^16.8.10",
     "@types/react-intl": "^2.3.17",
     "apollo-client": "^2.4.7",
+    "babel-jest": "^27.0.5",
     "graphql": "^14.0.2",
+    "jest": "^27.0.5",
+    "jest-dom": "^4.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-apollo": "^3.1.3",

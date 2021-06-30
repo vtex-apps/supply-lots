@@ -1,7 +1,6 @@
-import type { ComponentType, SyntheticEvent } from 'react'
+import type { FC, SyntheticEvent } from 'react'
 import React, { useContext } from 'react'
-import type { InjectedIntlProps, IntlShape } from 'react-intl'
-import { injectIntl } from 'react-intl'
+import { injectIntl, useIntl } from 'react-intl'
 import { Button, DatePicker, Dropdown, Input, Modal } from 'vtex.styleguide'
 
 import {
@@ -12,12 +11,10 @@ import {
 import WarehouseContext from '../Context/WarehouseContext'
 import ModalLimit from './limit'
 
-interface Props {
-  intl: IntlShape
-}
-
-const ModalAdd: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
+const ModalAdd: FC = () => {
   const provider = useContext(WarehouseContext)
+
+  const intl = useIntl()
 
   function closeModal() {
     provider.setModal(0)

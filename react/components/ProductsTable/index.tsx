@@ -1,9 +1,8 @@
-import type { ComponentType } from 'react'
-import React, { useContext } from 'react'
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+import React, { useContext, FC } from 'react'
 import { PageBlock, PageHeader, Table } from 'vtex.styleguide'
 import { useRuntime } from 'vtex.render-runtime'
-import type { InjectedIntlProps, IntlShape } from 'react-intl'
-import { injectIntl } from 'react-intl'
+import { injectIntl, useIntl } from 'react-intl'
 
 import WarehouseContext from '../Context/WarehouseContext'
 import ModalAdd from '../Modal/add'
@@ -11,11 +10,10 @@ import ModalDelete from '../Modal/delete'
 import ModalTransfer from '../Modal/transfer'
 import { productTable } from '../../utils/definedMessages'
 
-interface Props {
-  intl: IntlShape
-}
-const ProductsTable: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
+const ProductsTable: FC = () => {
   const provider = useContext(WarehouseContext)
+
+  const intl = useIntl()
 
   const { history } = useRuntime()
 

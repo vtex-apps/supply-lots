@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "supply-lots",
+			"path": ".."
+		},
+		{
+			"name": ".vscode",
+			"path": "../../App Avalara/avatax-br-admin/.vscode"
+		}
+	],
+	"settings": {}
+}
