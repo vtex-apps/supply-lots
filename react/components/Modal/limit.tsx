@@ -1,6 +1,6 @@
 import type { FC, SyntheticEvent } from 'react'
 import React, { useContext } from 'react'
-import { useIntl, injectIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { Button, Modal } from 'vtex.styleguide'
 
 import { commonModal, modalLimit } from '../../utils/definedMessages'
@@ -44,4 +44,4 @@ const ModalLimit: FC = () => {
   )
 }
 
-export default injectIntl(ModalLimit)
+export default ModalLimit

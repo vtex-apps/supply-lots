@@ -1,6 +1,6 @@
 import type { FC, SyntheticEvent } from 'react'
 import React, { useContext } from 'react'
-import { injectIntl, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { Button, Modal } from 'vtex.styleguide'
 
 import IconTrashCan from '../../icons/IconTrashCan'
@@ -67,4 +67,4 @@ const ModalDelete: FC = () => {
   )
 }
 
-export default injectIntl(ModalDelete)
+export default ModalDelete

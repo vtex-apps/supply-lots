@@ -1,6 +1,6 @@
 import type { FC, SyntheticEvent } from 'react'
 import React, { useContext } from 'react'
-import { useIntl, injectIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { Button, Modal } from 'vtex.styleguide'
 
 import IconTransferBig from '../../icons/IconsTransferBig'
@@ -65,4 +65,4 @@ const ModalTransfer: FC = () => {
   )
 }
 
-export default injectIntl(ModalTransfer)
+export default ModalTransfer

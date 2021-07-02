@@ -2,7 +2,7 @@
 import React, { useContext, FC } from 'react'
 import { PageBlock, PageHeader, Table } from 'vtex.styleguide'
 import { useRuntime } from 'vtex.render-runtime'
-import { injectIntl, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import WarehouseContext from '../Context/WarehouseContext'
 import ModalAdd from '../Modal/add'
@@ -70,4 +70,4 @@ const ProductsTable: FC = () => {
   )
 }
 
-export default injectIntl(ProductsTable)
+export default ProductsTable

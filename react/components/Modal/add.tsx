@@ -1,5 +1,5 @@
 import type { FC, SyntheticEvent } from 'react'
-import React, { useContext } from 'react'
+import React, { useMemo, useContext } from 'react'
 import { injectIntl, useIntl } from 'react-intl'
 import { Button, DatePicker, Dropdown, Input, Modal } from 'vtex.styleguide'
 
@@ -32,8 +32,11 @@ const ModalAdd: FC = () => {
     },
   ]
 
-  const currentDate = new Date()
-  const minDate = currentDate.setDate(currentDate.getDate() + 1)
+  const minDate = useMemo(() => {
+    const currentDate = new Date()
+
+    return currentDate.setDate(currentDate.getDate() + 1)
+  }, [])
 
   if (provider.limit) return <ModalLimit></ModalLimit>
 
