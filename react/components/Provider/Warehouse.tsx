@@ -65,6 +65,8 @@ const WarehouseProvider: FC = (props) => {
     variables: { skuId: sku.id, warehouseId: warehouse.id },
   })
 
+  const MAX_NUMBERS_OF_ADD_SUPPLY_LOTS = 9
+
   const [setSupplyLotValue] = useMutation(setSupplyLot)
   const [deleteSupplyLotValue] = useMutation(deleteSupplyLot)
   const [transferSupplyLotValue] = useMutation(transferSupplyLot)
@@ -155,7 +157,10 @@ const WarehouseProvider: FC = (props) => {
     setKeep(undefined)
     setItems(undefined)
 
-    if (dataListSupplyLots?.listSupplyLots?.length > 9) {
+    if (
+      dataListSupplyLots?.listSupplyLots?.length >
+      MAX_NUMBERS_OF_ADD_SUPPLY_LOTS
+    ) {
       if (!limit) setLimit(true)
     } else if (limit) {
       setLimit(false)

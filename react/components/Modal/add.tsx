@@ -1,6 +1,6 @@
 import type { FC, SyntheticEvent } from 'react'
 import React, { useMemo, useContext } from 'react'
-import { injectIntl, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { Button, DatePicker, Dropdown, Input, Modal } from 'vtex.styleguide'
 
 import {
@@ -131,4 +131,4 @@ const ModalAdd: FC = () => {
   )
 }
 
-export default injectIntl(ModalAdd)
+export default ModalAdd

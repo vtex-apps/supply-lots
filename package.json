@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "babel": "^6.23.0",
-    "react-intl": "3",
+    "react-intl": "^5.18.2",
     "test": "^0.6.0",
     "yup": "^0.32.9"
   },
