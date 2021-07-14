@@ -7,6 +7,7 @@ node_modules/
 package.json
 README.md
 CHANGELOG.md
+node/**/__tests__/**
 react/**/__tests__/**
 react/**/__mocks__/**
 react/testUtils/**

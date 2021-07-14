@@ -1,36 +1,25 @@
 import { v4 } from 'uuid'
 
 export const listSupplyLots = (
-  _: any,
+  _: unknown,
   {
     skuId,
     warehouseId,
     supplyLotId,
-    filterZeros,
-  }: {
-    skuId: string
-    warehouseId: string
-    supplyLotId?: string
-    filterZeros: boolean
-  },
+  }: { skuId: string; warehouseId: string; supplyLotId?: string },
   { clients: { supplyLot } }: Context
-) =>
-  supplyLot
-    .list(skuId, warehouseId, supplyLotId)
-    .then((list) =>
-      filterZeros ? list.filter((lot) => lot.totalQuantity > 0) : list
-    )
+) => supplyLot.list(skuId, warehouseId, supplyLotId)
 
 export const setSupplyLot = (
-  _: any,
+  _: unknown,
   { supplyLotData }: { supplyLotData: SupplyLotInterface },
   { clients: { supplyLot } }: Context
 ) =>
-  (supplyLotData.supplyLotId = supplyLotData.supplyLotId || v4()) &&
+  (supplyLotData.supplyLotId = supplyLotData.supplyLotId ?? v4()) &&
   supplyLot.set(supplyLotData)
 
 export const transferSupplyLot = (
-  _: any,
+  _: unknown,
   {
     skuId,
     warehouseId,
@@ -40,7 +29,7 @@ export const transferSupplyLot = (
 ) => supplyLot.transfer(skuId, warehouseId, supplyLotId)
 
 export const deleteSupplyLot = (
-  _: any,
+  _: unknown,
   {
     skuId,
     warehouseId,
