@@ -1241,10 +1241,10 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
   integrity sha512-te5lMAWii1uEJ4FwLjzdlbw3+n0FZNOvFXHxQDKeT0dilh7HOzdMzV2TrJVUzq8ep7J4Na8OUYPRLSQkJHAlrg==
 
-"@vtex/api@6.42.1":
-  version "6.42.1"
-  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.42.1.tgz#b0030afa16750f995bf8296bdc8b22ce2fa5907b"
-  integrity sha512-b9U+G1ZuZ6MOsbiLn+/FEW/XnTIGnsKam1YxUf7OHJhPY+ebupkxIhFeAWub/Mf8xELaNl+0EdrwUbuq4dNFxQ==
+"@vtex/api@6.43.0":
+  version "6.43.0"
+  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.43.0.tgz#f84ce6dcfcc96e3be5d6917437e21b66a1a7d267"
+  integrity sha512-NF2+x7XFE9D31oUb3U2i9UIZtakUKGAZKfRPYwdSpMQZits4wpL4jBcnjwX7Bufl9lZx3GfnLm0LabLI7vjAOw==
   dependencies:
     "@types/koa" "^2.11.0"
     "@types/koa-compose" "^3.2.3"
@@ -5243,7 +5243,7 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
-stats-lite@vtex/node-stats-lite#dist:
+"stats-lite@github:vtex/node-stats-lite#dist":
   version "2.2.0"
   resolved "https://codeload.github.com/vtex/node-stats-lite/tar.gz/1b0d39cc41ef7aaecfd541191f877887a2044797"
   dependencies:
@@ -5729,6 +5729,14 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+"vtex.render-runtime@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.128.4/public/@types/vtex.render-runtime":
+  version "8.128.4"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.128.4/public/@types/vtex.render-runtime#63491782d44910c4edc8528bc645c7c335c33128"
+
+"vtex.styleguide@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.143.0/public/@types/vtex.styleguide":
+  version "9.143.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.143.0/public/@types/vtex.styleguide#a25555601abee353ed3e859ffb57e98c9e07e911"
 
 w3c-hr-time@^1.0.1:
   version "1.0.1"

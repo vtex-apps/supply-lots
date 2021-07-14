@@ -1,11 +1,6 @@
 {
-  "section": "orders",
-  "subSection": "inventoryAndShipping",
-  "subSectionItems": [
-    {
-      "labelId": "admin/inventory",
-      "path": "/admin/supply-lots-inventory"
-    
-    }
-  ]
+  "section": "storeSetup",
+  "LMProductId": "55",
+  "titleId": "audit.home.title",
+  "path": "/admin/audit"
 }

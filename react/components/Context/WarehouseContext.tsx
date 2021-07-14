@@ -5,7 +5,7 @@ interface WarehouseContextType {
   warehouse: Warehouse
   sku: Sku
   newSupplyLot: () => void
-  listSupplyLotsValues: any
+  orderedItems: any
   schemaTable: any
   modal: number
   setModal: (modal: number) => void
@@ -19,18 +19,22 @@ interface WarehouseContextType {
   setDelete: (modalDelete: boolean) => void
   modalTransfer: boolean | undefined
   setTransfer: (modalDelete: boolean) => void
-  addSupplyLot:  () => void
-  editSupplyLot:  () => void
-  deleteSupplyLots:  () => void
+  addSupplyLot: () => void
+  editSupplyLot: () => void
+  deleteSupplyLots: () => void
   transferSupplyLots: () => void
-  text: string,
+  text: string
   limit: boolean
+  sortedByValue: string
+  sortOrderValue: string
+  sort: (sortOrder: any, sortedBy: any) => void
+  setText: (text: string) => void
 }
 const WarehouseContext = React.createContext<WarehouseContextType>({
   warehouse: {},
   sku: {},
   newSupplyLot: () => {},
-  listSupplyLotsValues: {},
+  orderedItems: {},
   schemaTable: {},
   modal: 0,
   setModal: () => {},
@@ -49,7 +53,11 @@ const WarehouseContext = React.createContext<WarehouseContextType>({
   deleteSupplyLots: () => {},
   transferSupplyLots: () => {},
   text: '',
-  limit: false
+  limit: false,
+  sortedByValue: '',
+  sortOrderValue: '',
+  sort: () => {},
+  setText: () => {},
 })
 
 export default WarehouseContext

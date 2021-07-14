@@ -1,19 +1,18 @@
 /* eslint-disable vtex/prefer-early-return */
 /* eslint-disable func-names */
-import { FC, SyntheticEvent, useEffect } from 'react'
-import React, { useMemo, useState } from 'react'
+import type { FC, SyntheticEvent } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo'
 import * as yup from 'yup'
-
 import {
   IconDelete,
-  IconExternalLinkMini,
   IconEdit,
   Tag,
   Tooltip,
   Button,
   IconInfo,
 } from 'vtex.styleguide'
+import { injectIntl, useIntl } from 'react-intl'
 
 import WarehouseContext from '../Context/WarehouseContext'
 import getSkuAndWarehouseNames from '../../queries/getSkuAndWarehouseNames.gql'
@@ -21,11 +20,8 @@ import listSupplyLots from '../../queries/listSupplyLots.gql'
 import setSupplyLot from '../../queries/setSupplyLot.gql'
 import deleteSupplyLot from '../../queries/deleteSupplyLot.gql'
 import transferSupplyLot from '../../queries/transferSupplyLot.gql'
-
-const initialState = {
-  searchValue: '',
-  emptyStateLabel: 'Nothing to show.',
-}
+import IconTransfer from '../../icons/IconsTransfer'
+import { provider } from '../../utils/definedMessages'
 
 const initialSku = {
   id: '',
@@ -37,27 +33,15 @@ const initialWarehouse = {
   name: '',
 }
 
-const actionsFalse = {
-  1: true,
-  2: false,
-  3: false,
-  4: false,
-  5: false,
-  6: false,
-  7: false,
-  8: false,
-  9: false,
-  10: false,
-}
-
 const schemaYup = yup.object().shape({
   dateOfSupplyUtc: yup.date().required(),
   keepSellingAfterExpiration: yup.boolean().required(),
-  totalQuantity: yup.number().required().positive().integer()
+  totalQuantity: yup.number().required().positive().integer(),
 })
 
 const WarehouseProvider: FC = (props) => {
-  //Definições
+  // Definições
+  const intl = useIntl()
   const [warehouse, setWarehouse] = useState<Warehouse>(initialWarehouse)
   const [sku, setSku] = useState<Sku>(initialSku)
   const [date, setDate] = useState<Date>()
@@ -68,46 +52,42 @@ const WarehouseProvider: FC = (props) => {
   const [modalTransfer, setTransfer] = useState(false)
   const [text, setText] = useState('')
   const [id, setId] = useState('')
-  const [sortedBy, setSortedBy] = useState()
-  const [sortOrder, setSortOrder] = useState()
+  const [sortedByValue, setSortedBy] = useState('index')
+  const [sortOrderValue, setSortOrder] = useState('index')
   const [limit, setLimit] = useState(false)
+  const [orderedItems, setOrderedItems] = useState<any[]>()
 
-  const { data: dataListSupplyLots, refetch } =
-    useQuery(listSupplyLots,  {
-      variables: { skuId: sku.id, warehouseId: warehouse.id },
-    });
+  const { data: dataListSupplyLots, refetch } = useQuery(listSupplyLots, {
+    variables: { skuId: sku.id, warehouseId: warehouse.id },
+  })
 
-    const { data: dataNames } =
-    useQuery(getSkuAndWarehouseNames,  {
-      variables: { skuId: sku.id, warehouseId: warehouse.id },
-    });
+  const { data: dataNames } = useQuery(getSkuAndWarehouseNames, {
+    variables: { skuId: sku.id, warehouseId: warehouse.id },
+  })
 
   const [setSupplyLotValue] = useMutation(setSupplyLot)
   const [deleteSupplyLotValue] = useMutation(deleteSupplyLot)
   const [transferSupplyLotValue] = useMutation(transferSupplyLot)
 
-  //Adicionando informações do sku e da warehouse 
   useEffect(() => {
-    var url = window.location.href; 
-    var values = url.split('?'); 
-    
+    const url = window.location.href
+    let values = url.split('?')
+
     if (values[1] !== undefined) {
-      values = values[1].split('&');
+      values = values[1].split('&')
       const idSku = values[0].split('=')
       const idWarehouse = values[1].split('=')
 
-      updateSku({id: idSku[1]})
-      updateWarehouse({id: idWarehouse[1]})
+      updateSku({ id: idSku[1] })
+      updateWarehouse({ id: idWarehouse[1] })
     }
-
   }, [])
 
   useMemo(() => {
-   if(dataNames){
-    updateSku({name: dataNames?.getSkuAndWarehouseNames[0]})
-    updateWarehouse({name:dataNames?.getSkuAndWarehouseNames[1]})
-   } 
-
+    if (dataNames) {
+      updateSku({ name: dataNames?.getSkuAndWarehouseNames[0] })
+      updateWarehouse({ name: dataNames?.getSkuAndWarehouseNames[1] })
+    }
   }, [dataNames])
 
   function updateSku(object: Sku) {
@@ -117,46 +97,53 @@ const WarehouseProvider: FC = (props) => {
   function updateWarehouse(object: Warehouse) {
     setWarehouse({ ...warehouse, ...object })
   }
-  
+
   function updateItems(object: number) {
     setItems(object)
   }
 
-  
-  //Funções da tabela
+  // Funções da tabela
   async function validation() {
-  const object = { dateOfSupplyUtc: date,
-    keepSellingAfterExpiration: keep,
-    totalQuantity: items}
-  const retorno = await schemaYup.validate(object).catch(function (err) {
-    err.name // => 'ValidationError'
-    err.errors // => ['Deve ser maior que 18']
+    const object = {
+      dateOfSupplyUtc: date,
+      keepSellingAfterExpiration: keep,
+      totalQuantity: items,
+    }
 
-    if(err.errors[0] === "totalQuantity must be a positive number") setText('O total de lotes precisa ser maior que 0')
-    else setText('Preencha todos os campos')
-    return false
-  })
+    const retorno = await schemaYup.validate(object).catch(function (err) {
+      err.name
+      err.errors
 
-  return retorno
+      if (err.errors[0] === 'totalQuantity must be a positive number') {
+        setText(intl.formatMessage(provider.textNoticeNumber))
+      } else {
+        setText(intl.formatMessage(provider.textNotice))
+      }
+
+      return false
+    })
+
+    return retorno
   }
 
-  async function addSupplyLot(){
+  async function addSupplyLot() {
     const valid = await validation()
-    if(valid){
+
+    if (valid) {
       setModal(0)
       setText('')
       let dateValue = '0000-00-00'
-      if(date != undefined) dateValue = date?.toISOString()
-        const supplyLotData: SupplyLotInput ={
+
+      if (date !== undefined) dateValue = date?.toISOString()
+      const supplyLotData: SupplyLotInput = {
         dateOfSupplyUtc: dateValue,
-        keepSellingAfterExpiration: keep ? keep : false,
+        keepSellingAfterExpiration: keep ?? false,
         skuId: sku.id ? sku.id : '',
         warehouseId: warehouse.id ? warehouse.id : '',
-        totalQuantity: items ? items : 0
+        totalQuantity: items ?? 0,
       }
 
-
-      await setSupplyLotValue ({ variables: { supplyLotData } })
+      await setSupplyLotValue({ variables: { supplyLotData } })
 
       refetch()
     }
@@ -169,26 +156,26 @@ const WarehouseProvider: FC = (props) => {
     setItems(undefined)
   }
 
-  async function editSupplyLot(){
+  async function editSupplyLot() {
     const valid = await validation()
-    if(valid){
+
+    if (valid) {
       setModal(0)
       setText('')
 
       let dateValue = '0000-00-00'
-      if(date != undefined) dateValue = date?.toISOString()
-        const supplyLotData: SupplyLotInput ={
+
+      if (date !== undefined) dateValue = date?.toISOString()
+      const supplyLotData: SupplyLotInput = {
         dateOfSupplyUtc: dateValue,
-        keepSellingAfterExpiration: keep ? keep : false,
+        keepSellingAfterExpiration: keep ?? false,
         skuId: sku.id ? sku.id : '',
         warehouseId: warehouse.id ? warehouse.id : '',
-        totalQuantity: items ? items : 0,
-        supplyLotId: id ? id : '',
-
+        totalQuantity: items ?? 0,
+        supplyLotId: id || '',
       }
 
-
-      await setSupplyLotValue ({ variables: { supplyLotData } })
+      await setSupplyLotValue({ variables: { supplyLotData } })
 
       refetch()
     }
@@ -196,50 +183,59 @@ const WarehouseProvider: FC = (props) => {
 
   async function clickEdit(index: number, supplyLotId: string) {
     setModal(2)
-    const dateValue = new Date(dataListSupplyLots?.listSupplyLots[index]?.dateOfSupplyUtc)
+    const dateValue = new Date(
+      dataListSupplyLots?.listSupplyLots[index]?.dateOfSupplyUtc
+    )
 
     setDate(dateValue)
     setItems(dataListSupplyLots?.listSupplyLots[index]?.totalQuantity)
-    setKeep(dataListSupplyLots?.listSupplyLots[index]?.keepSellingAfterExpiration)
+    setKeep(
+      dataListSupplyLots?.listSupplyLots[index]?.keepSellingAfterExpiration
+    )
 
     setId(supplyLotId)
   }
 
-  async function deleteSupplyLots(){
+  async function deleteSupplyLots() {
     setDelete(false)
-    await deleteSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
+    await deleteSupplyLotValue({
+      variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id },
+    })
 
     refetch()
   }
 
-  function clickDelete(
-    supplyLotId: string
-  ) {
+  function clickDelete(supplyLotId: string) {
     setDelete(true)
     setId(supplyLotId)
-
   }
 
-  async function transferSupplyLots(){
+  async function transferSupplyLots() {
     setTransfer(false)
-    await transferSupplyLotValue ({ variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id } })
+    await transferSupplyLotValue({
+      variables: { skuId: sku.id, warehouseId: warehouse.id, supplyLotId: id },
+    })
 
     refetch()
   }
 
-  function clickTransfer(
-    supplyLotId: string
-  ) {
+  function clickTransfer(supplyLotId: string) {
     setTransfer(true)
     setId(supplyLotId)
   }
 
-  //Construindo a tabela
   const listSupplyLotsValues = useMemo(() => {
     const tableValues: any[] = []
-    
-    if(dataListSupplyLots?.listSupplyLots.length === 10 && !limit) setLimit(true)
-    else if (limit) setLimit(false)
+
+    if (
+      dataListSupplyLots?.listSupplyLots.length === 8 &&
+      !limit &&
+      modal === 1
+    ) {
+      setLimit(true)
+    } else if (limit) {
+      setLimit(false)
+    }
 
     // eslint-disable-next-line array-callback-return
     dataListSupplyLots?.listSupplyLots.map(function (
@@ -254,12 +250,14 @@ const WarehouseProvider: FC = (props) => {
       indexOf: number
     ) {
       const value = {
-        index: indexOf+1,
-        date: (new Date(values.dateOfSupplyUtc)).toLocaleDateString(),     
+        index: indexOf + 1,
+        date: new Date(values.dateOfSupplyUtc).toLocaleDateString(),
         total: values.totalQuantity,
-        reserved:values.reservedQuantity,
-        available:values.availableQuantity,
-        keepSelling: values.keepSellingAfterExpiration ? 'Sim' : 'Não',
+        reserved: values.reservedQuantity,
+        available: values.availableQuantity,
+        keepSelling: values.keepSellingAfterExpiration
+          ? intl.formatMessage(provider.yes)
+          : intl.formatMessage(provider.no),
         color: colorLabel(
           values.keepSellingAfterExpiration,
           values.dateOfSupplyUtc
@@ -273,38 +271,168 @@ const WarehouseProvider: FC = (props) => {
       }
 
       tableValues.push(value)
-      
     })
+
+    setOrderedItems(tableValues)
 
     return tableValues
   }, [dataListSupplyLots])
+
+  function converter(dateConverter: string) {
+    const parts = dateConverter.split('/')
+
+    return new Date(
+      parseInt(parts[2], 10),
+      parseInt(parts[1], 10) - 1,
+      parseInt(parts[0], 10)
+    )
+  }
+
+  function sortDateASC() {
+    listSupplyLotsValues.sort(function (a, b) {
+      if (converter(a.date) > converter(b.date)) {
+        return 1
+      }
+
+      if (converter(a.date) < converter(b.date)) {
+        return -1
+      }
+
+      // a must be equal to b
+      return 0
+    })
+  }
+
+  function sortDateDESC() {
+    listSupplyLotsValues.sort(function (a, b) {
+      if (converter(a.date) < converter(b.date)) {
+        return 1
+      }
+
+      if (converter(a.date) > converter(b.date)) {
+        return -1
+      }
+
+      // a must be equal to b
+      return 0
+    })
+  }
+
+  function sortIndexASC() {
+    listSupplyLotsValues.sort(function (a, b) {
+      if (a.index > b.index) {
+        return 1
+      }
+
+      if (a.index < b.index) {
+        return -1
+      }
+
+      // a must be equal to b
+      return 0
+    })
+  }
+
+  function sortIndexDESC() {
+    listSupplyLotsValues.sort(function (a, b) {
+      if (a.index < b.index) {
+        return 1
+      }
+
+      if (a.index > b.index) {
+        return -1
+      }
+
+      // a must be equal to b
+      return 0
+    })
+  }
+
+  function sort({
+    sortOrder,
+    sortedBy,
+  }: {
+    sortOrder: string
+    sortedBy: string
+  }) {
+    if (sortedBy === 'date') {
+      if (sortOrder === 'ASC') {
+        sortDateASC()
+      } else {
+        sortDateDESC()
+      }
+    } else if (sortOrder === 'ASC') {
+      sortIndexASC()
+    } else {
+      sortIndexDESC()
+    }
+
+    setOrderedItems(listSupplyLotsValues)
+    setSortOrder(sortOrder)
+    setSortedBy(sortedBy)
+  }
+
+  useMemo(() => {
+    listSupplyLotsValues.sort(function (a, b) {
+      if (a.index > b.index) {
+        return 1
+      }
+
+      if (a.index < b.index) {
+        return -1
+      }
+
+      // a must be equal to b
+      return 0
+    })
+  }, [listSupplyLotsValues])
 
   function colorLabel(
     keepSellingAfterExpiration: boolean,
     dateOfSupplyUtc: string
   ) {
     let color = '#8bc34a'
-    let label = 'Regular'
-    const date = new Date()
-    const dateUTC = date.toUTCString()
+    let label = intl.formatMessage(provider.regular)
+    const dateNow = new Date()
+    const dateUTC = dateNow.toUTCString()
 
     const secondsdateOfSupplyUtc = Date.parse(dateOfSupplyUtc)
     const secondsNow = Date.parse(dateUTC)
 
     if (secondsdateOfSupplyUtc < secondsNow && !keepSellingAfterExpiration) {
-      label = 'Expirado'
+      label = intl.formatMessage(provider.expired)
       color = 'red'
     } else if (
       secondsdateOfSupplyUtc < secondsNow &&
       keepSellingAfterExpiration
     ) {
-      label = 'Expirado e vendendo'
+      label = intl.formatMessage(provider.expiredYes)
       color = 'red'
     } else if (
       secondsdateOfSupplyUtc > secondsNow &&
       secondsdateOfSupplyUtc - secondsNow < 259200000
     ) {
-      label = 'Expirando'
+      const days = Math.ceil(
+        (secondsdateOfSupplyUtc - secondsNow) / (1000 * 60 * 60 * 24)
+      ).toString()
+
+      let notice = ''
+
+      if (days === '1') {
+        notice =
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+          intl.formatMessage(provider.expiring) +
+          days +
+          intl.formatMessage(provider.day)
+      } else {
+        notice =
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+          intl.formatMessage(provider.expiring) +
+          days +
+          intl.formatMessage(provider.days)
+      }
+
+      label = notice
       color = '#ffd700'
     }
 
@@ -314,42 +442,44 @@ const WarehouseProvider: FC = (props) => {
   const schemaTable = {
     properties: {
       index: {
-        title: 'Indice',
-        width: 80
+        title: intl.formatMessage(provider.index),
+        width: 80,
+        sortable: true,
       },
       date: {
-        title: 'Data de chegada',
-        minWidth: 100
+        title: intl.formatMessage(provider.date),
+        minWidth: 100,
+        sortable: true,
       },
       total: {
-        title: 'Total dos lotes',
+        title: intl.formatMessage(provider.total),
       },
-      reserved:{
-        title: "Reservado"
+      reserved: {
+        title: intl.formatMessage(provider.reserved),
       },
-      available:{
-        title: "Disponível"
+      available: {
+        title: intl.formatMessage(provider.available),
       },
       keepSelling: {
         minWidth: 200,
         headerRenderer: () => {
           return (
             <>
-            <p>{'Permanecer vendendo'}</p>
-            <div className="ml2">
-            <Tooltip label="O produto deve ser vendido mesmo se a data de chegada já tiver passado? ">
-              <span className="c-on-base pointer">
-                <IconInfo />
-              </span>
-            </Tooltip>
-            </div>
+              <p>{intl.formatMessage(provider.keep)}</p>
+              <div className="ml2">
+                <Tooltip label={intl.formatMessage(provider.info)}>
+                  <span className="c-on-base pointer">
+                    <IconInfo />
+                  </span>
+                </Tooltip>
+              </div>
             </>
           )
         },
       },
       color: {
-        title: 'Status',
-        minWidth:200,
+        title: intl.formatMessage(provider.status),
+        minWidth: 200,
         cellRenderer: ({ cellData }: any) => {
           return (
             <Tag color="#ffff" bgColor={cellData?.color}>
@@ -359,51 +489,51 @@ const WarehouseProvider: FC = (props) => {
         },
       },
       actions: {
-        title: 'Ações',
+        title: intl.formatMessage(provider.actions),
         cellRenderer: ({ cellData }: any) => {
-          const value = `${cellData?.skuId}, ${cellData?.warehouseId},  ${cellData?.supplyLotId}`
           return (
             <>
-            <Tooltip label="Editar estoque futuro">
-              <Button
-                icon={true}
-                variation="tertiary"
-                autoComplete="teste"
-                onClick={(e: SyntheticEvent) => {
-                  e.preventDefault()
-                  clickEdit(
-                    cellData?.index,
-                    cellData?.supplyLotId
-                  )
-                }
-                
-              }
-              ><IconEdit /></Button>
+              <Tooltip label={intl.formatMessage(provider.edit)}>
+                <Button
+                  icon={true}
+                  variation="tertiary"
+                  onClick={(e: SyntheticEvent) => {
+                    e.preventDefault()
+                    clickEdit(cellData?.index, cellData?.supplyLotId)
+                  }}
+                >
+                  <IconEdit />
+                </Button>
               </Tooltip>
-              <Tooltip label="Excluir estoque futuro">
-                 <Button
+              <Tooltip label={intl.formatMessage(provider.delete)}>
+                <Button
                   icon={true}
                   variation="tertiary"
                   onClick={(e: SyntheticEvent) => {
                     e.preventDefault()
                     clickDelete(cellData.supplyLotId)
                   }}
-                  ><IconDelete /></Button>
+                >
+                  <IconDelete />
+                </Button>
               </Tooltip>
-              <Tooltip label="Transferir estoque futuro">
-
-              <Button
-                icon={true}
-                variation="tertiary"
-                onClick={(e: SyntheticEvent) => {
-                  e.preventDefault()
-                  clickTransfer(cellData.supplyLotId)
-                }}
-              ><IconExternalLinkMini /></Button>
+              <Tooltip label={intl.formatMessage(provider.transfer)}>
+                <Button
+                  icon={true}
+                  variation="tertiary"
+                  onClick={(e: SyntheticEvent) => {
+                    e.preventDefault()
+                    clickTransfer(cellData.supplyLotId)
+                  }}
+                >
+                  <a>
+                    <IconTransfer />
+                  </a>
+                </Button>
               </Tooltip>
             </>
           )
-          }
+        },
       },
     },
   }
@@ -414,13 +544,13 @@ const WarehouseProvider: FC = (props) => {
         warehouse,
         sku,
         newSupplyLot,
-        listSupplyLotsValues,
+        orderedItems,
         schemaTable,
         modal,
         setModal,
         setDate,
         date,
-        setKeep, 
+        setKeep,
         keep,
         items,
         updateItems,
@@ -433,7 +563,11 @@ const WarehouseProvider: FC = (props) => {
         deleteSupplyLots,
         transferSupplyLots,
         text,
-        limit
+        limit,
+        sortedByValue,
+        sortOrderValue,
+        sort,
+        setText,
       }}
     >
       {props.children}
@@ -441,6 +575,4 @@ const WarehouseProvider: FC = (props) => {
   )
 }
 
-export default WarehouseProvider
-
-
+export default injectIntl(WarehouseProvider)

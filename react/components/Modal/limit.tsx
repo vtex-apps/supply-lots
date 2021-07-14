@@ -1,40 +1,49 @@
-import React, { FC, SyntheticEvent, useContext} from "react"
-import { Button, Modal } from "vtex.styleguide"
-import WarehouseContext from "../Context/WarehouseContext"
+import type { ComponentType, FC, SyntheticEvent } from 'react'
+import React, { useContext } from 'react'
+import type { InjectedIntlProps, IntlShape } from 'react-intl'
+import { injectIntl } from 'react-intl'
+import { Button, Modal } from 'vtex.styleguide'
 
-const ModalLimit: FC = () => {
-    const provider = useContext(WarehouseContext)
+import { commonModal, modalLimit } from '../../utils/definedMessages'
+import WarehouseContext from '../Context/WarehouseContext'
 
-    function closeModal(){
-        provider.setModal(0)
-    }
+interface Props {
+  intl: IntlShape
+}
+const ModalLimit: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
+  const provider = useContext(WarehouseContext)
 
-
-    return (
-        <Modal
-          isOpen={provider.modal}
-          responsiveFullScreen
-          bottomBar={
-            <div className="nowrap">
-              <span className="mr4">
-                <Button variation="tertiary" onClick={(e: SyntheticEvent) => { e.preventDefault; closeModal()}}>
-                  Cancelar
-                </Button>
-              </span>
-            </div>
-          }
-          onClose={(e: SyntheticEvent) => { e.preventDefault; closeModal()}}>
-         <div className="flex flex-column items-center justify-center t-heading-5">
-        <div className="pv3 t-heading-4">
-          Só é possível adicionar até 10 estoque futuros
-          </div>
-        </div>
-        </Modal>
-    )
+  function closeModal() {
+    provider.setModal(0)
   }
 
+  return (
+    <Modal
+      title={intl.formatMessage(modalLimit.limit)}
+      centered
+      isOpen={provider.modal}
+      responsiveFullScreen
+      bottomBar={
+        <div className="nowrap">
+          <span className="mr4">
+            <Button
+              variation="tertiary"
+              onClick={(e: SyntheticEvent) => {
+                e.preventDefault
+                closeModal()
+              }}
+            >
+              {intl.formatMessage(commonModal.cancel)}
+            </Button>
+          </span>
+        </div>
+      }
+      onClose={(e: SyntheticEvent) => {
+        e.preventDefault
+        closeModal()
+      }}
+    ></Modal>
+  )
+}
 
-export default ModalLimit
-
-
-
+export default injectIntl(ModalLimit)
