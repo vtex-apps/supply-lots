@@ -1,17 +1,15 @@
-import type { ComponentType, FC, SyntheticEvent } from 'react'
+import type { FC, SyntheticEvent } from 'react'
 import React, { useContext } from 'react'
-import type { InjectedIntlProps, IntlShape } from 'react-intl'
-import { injectIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { Button, Modal } from 'vtex.styleguide'
 
 import { commonModal, modalLimit } from '../../utils/definedMessages'
 import WarehouseContext from '../Context/WarehouseContext'
 
-interface Props {
-  intl: IntlShape
-}
-const ModalLimit: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
+const ModalLimit: FC = () => {
   const provider = useContext(WarehouseContext)
+
+  const intl = useIntl()
 
   function closeModal() {
     provider.setModal(0)
@@ -46,4 +44,4 @@ const ModalLimit: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
   )
 }
 
-export default injectIntl(ModalLimit)
+export default ModalLimit

@@ -1,18 +1,16 @@
-import type { ComponentType, SyntheticEvent } from 'react'
+import type { FC, SyntheticEvent } from 'react'
 import React, { useContext } from 'react'
-import type { IntlShape, InjectedIntlProps } from 'react-intl'
-import { injectIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { Button, Modal } from 'vtex.styleguide'
 
 import IconTrashCan from '../../icons/IconTrashCan'
 import { commonModal, modalDelete } from '../../utils/definedMessages'
 import WarehouseContext from '../Context/WarehouseContext'
 
-interface Props {
-  intl: IntlShape
-}
-const ModalDelete: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
+const ModalDelete: FC = () => {
   const provider = useContext(WarehouseContext)
+
+  const intl = useIntl()
 
   function closeModal() {
     provider.setDelete(false)
@@ -69,4 +67,4 @@ const ModalDelete: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
   )
 }
 
-export default injectIntl(ModalDelete)
+export default ModalDelete

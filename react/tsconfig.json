@@ -8,11 +8,12 @@
     "sourceMap": true,
     "target": "es2017",
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "types": ["jest"]
   },
   "typeAcquisition": {
     "enable": false
   },
-  "include": ["./**/*"],
+  "include": ["./**/*", "../jest.config.js"],
   "exclude": ["node_modules"]
 }

@@ -12,7 +12,7 @@ import {
   Button,
   IconInfo,
 } from 'vtex.styleguide'
-import { injectIntl, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import WarehouseContext from '../Context/WarehouseContext'
 import getSkuAndWarehouseNames from '../../queries/getSkuAndWarehouseNames.gql'
@@ -64,6 +64,8 @@ const WarehouseProvider: FC = (props) => {
   const { data: dataNames } = useQuery(getSkuAndWarehouseNames, {
     variables: { skuId: sku.id, warehouseId: warehouse.id },
   })
+
+  const MAX_NUMBERS_OF_ADD_SUPPLY_LOTS = 9
 
   const [setSupplyLotValue] = useMutation(setSupplyLot)
   const [deleteSupplyLotValue] = useMutation(deleteSupplyLot)
@@ -154,6 +156,15 @@ const WarehouseProvider: FC = (props) => {
     setDate(undefined)
     setKeep(undefined)
     setItems(undefined)
+
+    if (
+      dataListSupplyLots?.listSupplyLots?.length >
+      MAX_NUMBERS_OF_ADD_SUPPLY_LOTS
+    ) {
+      if (!limit) setLimit(true)
+    } else if (limit) {
+      setLimit(false)
+    }
   }
 
   async function editSupplyLot() {
@@ -194,6 +205,10 @@ const WarehouseProvider: FC = (props) => {
     )
 
     setId(supplyLotId)
+
+    if (limit) {
+      setLimit(false)
+    }
   }
 
   async function deleteSupplyLots() {
@@ -226,16 +241,6 @@ const WarehouseProvider: FC = (props) => {
 
   const listSupplyLotsValues = useMemo(() => {
     const tableValues: any[] = []
-
-    if (
-      dataListSupplyLots?.listSupplyLots.length === 8 &&
-      !limit &&
-      modal === 1
-    ) {
-      setLimit(true)
-    } else if (limit) {
-      setLimit(false)
-    }
 
     // eslint-disable-next-line array-callback-return
     dataListSupplyLots?.listSupplyLots.map(function (
@@ -575,4 +580,4 @@ const WarehouseProvider: FC = (props) => {
   )
 }
 
-export default injectIntl(WarehouseProvider)
+export default WarehouseProvider

@@ -1,18 +1,16 @@
-import type { ComponentType, FC, SyntheticEvent } from 'react'
+import type { FC, SyntheticEvent } from 'react'
 import React, { useContext } from 'react'
-import type { InjectedIntlProps, IntlShape } from 'react-intl'
-import { injectIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 import { Button, Modal } from 'vtex.styleguide'
 
 import IconTransferBig from '../../icons/IconsTransferBig'
 import { commonModal, modalTransfer } from '../../utils/definedMessages'
 import WarehouseContext from '../Context/WarehouseContext'
 
-interface Props {
-  intl: IntlShape
-}
-const ModalTransfer: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
+const ModalTransfer: FC = () => {
   const provider = useContext(WarehouseContext)
+
+  const intl = useIntl()
 
   function closeModal() {
     provider.setTransfer(false)
@@ -67,4 +65,4 @@ const ModalTransfer: ComponentType<Props & InjectedIntlProps> = ({ intl }) => {
   )
 }
 
-export default injectIntl(ModalTransfer)
+export default ModalTransfer
